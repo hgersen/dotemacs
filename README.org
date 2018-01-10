@@ -1,0 +1,19 @@
+#+TITLE: Emacs Configuration
+
+This is an experiment to create an Emacs configuration with a [[https://www.vim.org][Vim]] style editing grammar without
+using [[https://www.emacswiki.org/emacs/Evil][Evil mode]]. It maintains Vim's concept of text object, operations and grammar, but doesn't use
+the same keybindings. These reflects changes that are needed to have home row navigation using
+~knei~ as I use the [[https://colemakmods.github.io/mod-dh/][Colemak mod-DH]] keyboard layout
+
+* Core ideas
+This configuration uses the [[https://github.com/Kungsgeten/ryo-modal][ryo-modal]] package to set up a modal configuration in the form of a minor
+mode in combination with [[http://spacemacs.org/][spacemacs]] like transient modes using [[https://github.com/abo-abo/hydra][hydra]]. This allows me to create my own
+bindings that can be bound to a sequence of characters of my own choosing instead of having to fight
+~Evil~.
+
+Some of the core packages including [[https://github.com/jwiegley/use-package][use-package]] and ~ryo-modal~ are imported using [[https://github.com/ingydotnet/git-subrepo][git-subrepo]] to
+prevent the configuration breaking on updates when I least need it.
+
+* Credits
+A large part of the code in this repo is based on the Emacs configation of [[https://github.com/sriramkswamy/dotemacs][sriramkswamy]], who has
+implemented this for a qwerty keyboard layout.
