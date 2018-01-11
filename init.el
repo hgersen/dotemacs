@@ -53,8 +53,8 @@
 ;; set directory to load additional configurations from
 (add-to-list 'load-path (expand-file-name "config" user-emacs-directory))
 
-;; load settings from configuration file
-;; (require 'hge-editor-core)
+;; load settings from configuration files
+(require 'hge-core-emacs-settings)
 
 ;; silence the default GNU startup message for myself
 (eval '(setq inhibit-startup-echo-area-message "hge"))
