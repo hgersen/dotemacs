@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/jwiegley/use-package.git
+	branch = master
+	commit = 05a4033b830bf52c596ceedea10b2cbd91f85fdb
+	parent = 6b9af53464772e74f1ec71d297cd5da28f47980d
+	method = merge
+	cmdver = 0.4.0
