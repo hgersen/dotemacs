@@ -63,7 +63,7 @@
 (require 'hge-core-emacs-settings)
 (require 'hge-gui-settings)
 
-;; silence the default GNU startup message for myself
+;; silence default GNU startup for myself
 (eval '(setq inhibit-startup-echo-area-message "hge"))
 
 ;; reduce garbage collection to happen often; threshold at 5MB

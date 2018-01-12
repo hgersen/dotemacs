@@ -34,12 +34,6 @@
                                 "*Ibuffer*"))
   (winner-mode t))
 
-;; set default font
-(when (member "DejaVu Sans Mono" (font-family-list))
-  (set-face-attribute 'default nil
-                      :family "DejaVu Sans Mono"
-                      :weight 'normal))
-
 ;; switch to dark theme by default
 (use-package monokai-theme
   :ensure t
