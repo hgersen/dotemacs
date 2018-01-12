@@ -1,3 +1,6 @@
+;; Increase Garbage Collection to ease startup
+(setq gc-cons-threshold (* 500 1024 1024))
+
 ;; set up repositories
 (require 'package)
 (setq package-enable-at-startup nil)
@@ -7,6 +10,9 @@
 
 ;; do not load outdated elc files
 (setq load-prefer-newer t)
+
+;; make common libs extensions available
+(require 'cl-lib)
 
 ;; initialize the package system
 (package-initialize)
@@ -55,9 +61,13 @@
 
 ;; load settings from configuration files
 (require 'hge-core-emacs-settings)
+(require 'hge-gui-settings)
 
 ;; silence the default GNU startup message for myself
 (eval '(setq inhibit-startup-echo-area-message "hge"))
+
+;; reduce garbage collection to happen often; threshold at 5MB
+(add-hook 'after-init-hook (lambda () (setq gc-cons-threshold (* 5 1024 1024))))
 
 ;; display time it took to load the configuration
 (message "[startup] loading %s ... took %s" load-file-name (emacs-init-time))
