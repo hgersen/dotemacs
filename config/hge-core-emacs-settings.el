@@ -42,6 +42,8 @@
 ;; global settings
 (use-package global-settings
   :ensure nil
+  ;; make text auto-fill by default
+  :hook (text-mode . auto-fill-mode)
   :init
   ;; shorten yes/no answers
   (defalias 'yes-or-no-p 'y-or-n-p)
@@ -54,8 +56,6 @@
                 c-basic-offset 4
                 fill-column 90
                 sentence-end-double-space nil)
-  ;; make text auto-fill by default
-  (add-hook 'text-mode-hook 'auto-fill-mode)
   ;; keep track of locations in file
   (setq save-place-file (concat user-cache-directory "saveplace"))
   (save-place-mode t)
