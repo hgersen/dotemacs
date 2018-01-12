@@ -45,31 +45,20 @@
   :ensure t
   :hook (prog-mode . rainbow-delimiters-mode))
 
-;; provide helpful hints
-(use-package which-key
-  :ensure t
-  :delight
-  :init
-  (which-key-mode)
-  :config
-  (setq which-key-idle-delay 0.4))
-
 ;; configure mode-line
 (use-package telephone-line
   :ensure t
   :config
   (setq telephone-line-lhs
-       ;'((ryo . (telephone-line-ryo-modal-segment))
-        '((accent . (telephone-line-vc-segment
-                     telephone-line-process-segment))
+        '((ryo . (telephone-line-ryo-modal-segment))
+          '(accent . (telephone-line-vc-segment
+                      telephone-line-process-segment))
           (nil . (telephone-line-minor-mode-segment
                   telephone-line-buffer-segment))))
   (setq telephone-line-rhs
         '((nil . (telephone-line-misc-info-segment))
-          (accent . (telephone-line-major-mode-segment))))
-         ;(ryo . (telephone-line-airline-position-segment))))
-
-  ;TODO: set separators to curved - currently gives empty modeline in terminal mode
+          (accent . (telephone-line-major-mode-segment))
+          (ryo . (telephone-line-airline-position-segment))))
   (telephone-line-mode t))
 
 (provide 'hge-gui-settings)

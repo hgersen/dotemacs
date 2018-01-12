@@ -61,6 +61,7 @@
 
 ;; load settings from configuration files
 (require 'hge-core-emacs-settings)
+(require 'hge-ryo-core)
 (require 'hge-gui-settings)
 
 ;; silence default GNU startup for myself
