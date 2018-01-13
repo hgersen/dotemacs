@@ -27,8 +27,7 @@
 ;; useful extensions for emacs
 (use-package crux
   :ensure nil
-  :load-path "/libs/crux"
-  :ensure t)
+  :load-path "libs/crux")
 
 ;; roll my own modal mode
 (use-package ryo-modal
