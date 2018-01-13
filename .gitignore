@@ -2,4 +2,5 @@
 .cache/
 .temp/
 custom.el
+/auto-save-list/
 /elpa/
