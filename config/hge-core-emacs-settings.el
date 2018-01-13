@@ -63,7 +63,12 @@
                 sentence-end-double-space nil)
   ;; keep track of locations in file
   (setq save-place-file (concat user-cache-directory "saveplace"))
-  (save-place-mode t))
+  (save-place-mode t)
+  ;; set coding system to utf-8
+  (prefer-coding-system 'utf-8)
+  (set-default-coding-systems 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8))
 
 ;; visual settings
 (use-package visual-settings
