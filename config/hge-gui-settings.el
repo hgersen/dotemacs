@@ -51,8 +51,8 @@
   :config
   (setq telephone-line-lhs
         '((ryo . (telephone-line-ryo-modal-segment))
-          '(accent . (telephone-line-vc-segment
-                      telephone-line-process-segment))
+          (accent . (telephone-line-vc-segment
+                     telephone-line-process-segment))
           (nil . (telephone-line-minor-mode-segment
                   telephone-line-buffer-segment))))
   (setq telephone-line-rhs

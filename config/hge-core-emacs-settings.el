@@ -44,6 +44,7 @@
 ;; global settings
 (use-package global-settings
   :ensure nil
+  :after tidy-directories
   ;; make text auto-fill by default
   :hook (text-mode . auto-fill-mode)
   :init
