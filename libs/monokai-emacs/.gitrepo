@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/oneKelvinSmith/monokai-emacs.git
+	branch = master
+	commit = bb5cbbd5895b8b3fbc6af572b1fd0aacd4988a8a
+	parent = 4abaf6989002a8d476ae99f43def7a4b762f7521
+	method = merge
+	cmdver = 0.4.0
