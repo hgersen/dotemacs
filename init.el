@@ -62,8 +62,6 @@
 (use-package tidy-directories
   :ensure nil
   :init
-  (provide 'tidy-directories)
-  :config
   ;; hide the cache
   (defconst user-cache-directory
     (file-name-as-directory (concat user-emacs-directory ".cache")))
@@ -82,15 +80,15 @@
     (file-name-as-directory (concat user-emacs-directory ".temp")))
   (when (not (file-exists-p user-temp-directory))
     (make-directory user-temp-directory t))
-  (setq auto-save-file-name-transforms `((".*" ,user-temp-directory t))))
+  (setq auto-save-file-name-transforms `((".*" ,user-temp-directory t)))
+  (provide 'tidy-directories))
 
 ;; backup settings
 (use-package backup-settings
   :ensure nil
   :after tidy-directories
   :init
-  (provide 'backup-settings)
-  :config
+  ;:config
   (setq vc-make-backup-files t ; backup versioned files
         make-backup-files t ; backup a file the first time it is saved
         backup-by-copying t ; don't clobber symlinks
@@ -99,7 +97,8 @@
         kept-old-versions 5 ; number of original versions to keep (default 2)
         kept-new-versions 5 ; number of recent versions to keep (default 2)
         auto-save-default t ; auto-save every buffer that visits a file
-        ))
+        )
+  (provide 'backup-settings))
 
 ;; global settings
 (use-package global-settings
@@ -108,8 +107,6 @@
   ; make text auto-fill by default
   :hook (text-mode . auto-fill-mode)
   :init
-  (provide 'global-settings)
-  :config
   ;; shorten yes/no answers
   (defalias 'yes-or-no-p 'y-or-n-p)
   ;; confirm exit
@@ -123,6 +120,8 @@
                 sentence-end-double-space nil)
   ;; keep track of locations in file
   (setq save-place-file (concat user-cache-directory "saveplace"))
+  (provide 'global-settings)
+  :config
   (save-place-mode t)
   ;; set coding system to utf-8
   (prefer-coding-system 'utf-8)
@@ -134,14 +133,13 @@
 (use-package visual-settings
   :ensure nil
   :init
-  (provide 'visual-settings)
   (menu-bar-mode -1)
   (scroll-bar-mode -1)
   (tooltip-mode -1)
   (tool-bar-mode -1)
   ;; silence GNU startup messages
   (setq inhibit-startup-message t)
-
+  (provide 'visual-settings)
   :config
   ;; visual aids for code-editing
   (setq show-paren-delay 0)
@@ -167,8 +165,10 @@
 (add-to-list 'load-path (expand-file-name "config" user-emacs-directory))
 
 ;; load additional settings from configuration files
-(require 'hge-editor-core)
-(require 'hge-gui-settings)
+(use-package hge-editor-core :ensure nil)
+(use-package hge-gui-settings :ensure nil)
+(use-package hge-ryo-functions :ensure nil)
+(use-package hge-ryo-bindings :ensure nil)
 
 ;; reduce garbage collection to happen often; threshold at 5MB
 (add-hook 'after-init-hook (lambda () (setq gc-cons-threshold (* 5 1024 1024))))
