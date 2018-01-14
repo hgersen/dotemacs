@@ -1,6 +1,6 @@
 ;; make closing annoying popups easier: hit C-g to close
 (use-package popwin
-  :ensure t
+  :straight t
   :config
   (popwin-mode t)
 
@@ -21,7 +21,7 @@
 
 ;; ignore certain buffers when using winner undo
 (use-package winner
-  :ensure t
+  :straight t
   :config
   (setq winner-boring-buffers '("*Completions*"
                                 "*Compile-Log*"
@@ -36,19 +36,18 @@
 
 ;; switch to dark theme by default
 (use-package monokai-theme
-  :ensure nil
-  :load-path "libs/monokai-emacs"
+  :straight t
   :config
   (load-theme 'monokai t))
 
 ;; make matching parenthesis easier to spot
 (use-package rainbow-delimiters
-  :ensure t
+  :straight t
   :hook (prog-mode . rainbow-delimiters-mode))
 
 ;; configure mode-line
 (use-package telephone-line
-  :ensure t
+  :straight t
   :config
   (setq telephone-line-lhs
         '((ryo . (telephone-line-ryo-modal-segment))

@@ -11,8 +11,8 @@ mode in combination with [[http://spacemacs.org/][spacemacs]] like transient mod
 bindings that can be bound to a sequence of characters of my own choosing instead of having to fight
 ~Evil~.
 
-Some of the core packages including [[https://github.com/jwiegley/use-package][use-package]] and ~ryo-modal~ are imported using [[https://github.com/ingydotnet/git-subrepo][git-subrepo]] to
-prevent the configuration breaking on updates when I least need it.
+To ensure that this configuration is reproducible between different machines packages are
+installed and managed using [[https://github.com/raxod502/straight.el][straight.el]], which integrates well with [[https://github.com/jwiegley/use-package][use-package]].
 
 * Credits
 A large part of the code in this repo is based on the Emacs configation of [[https://github.com/sriramkswamy/dotemacs][sriramkswamy]], who has

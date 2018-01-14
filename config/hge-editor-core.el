@@ -13,13 +13,13 @@
 
 ;; enable the use of spacemacs like transient states
 (use-package hydra
-  :ensure t
+  :straight t
   :init
   (setq hydra-if-helpful t))
 
 ;; provide helpful hints
 (use-package which-key
-  :ensure t
+  :straight t
   :delight
   :init
   (which-key-mode)
@@ -32,11 +32,10 @@
 
 ;; roll my own modal mode
 (use-package ryo-modal
-  :ensure nil
+  :straight t
   ;; demand is needed to prevent errors; relating to :ryo-keyword
   :demand t
   :delight
-  :load-path "/home/hge/elisp/ryo-modal"
   ;; the *version takes precedence over other minor mode keybindings
   :bind* ("<escape>" . my/enable-ryo-modal-mode)
   ;; repeat needs to be bound to keymap
@@ -59,7 +58,7 @@
 
 ;; provide graphical tools to undo
 (use-package undo-tree
-  :ensure t
+  :straight t
   :ryo
   (:norepeat t)
   ("u" undo-tree-undo)
@@ -76,7 +75,7 @@
 
 ;; keep track of previously opened files
 (use-package recentf
-  :ensure t
+  :straight t
   :config
   (setq recentf-max-saved-items 1000
         recentf-auto-cleanup 300

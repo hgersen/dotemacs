@@ -1,57 +1,28 @@
 ;; Increase Garbage Collection to ease startup
 (setq gc-cons-threshold (* 500 1024 1024))
 
-;; set up repositories
-(require 'package)
-(setq package-enable-at-startup nil)
-(setq package-archives '(("org" . "http://orgmode.org/elpa/")
-                         ("gnu" . "https://elpa.gnu.org/packages/")
-                         ("melpa" . "https://melpa.org/packages/")))
+;; bootstrap package management using straight
+(let ((bootstrap-file (concat user-emacs-directory "straight/repos/straight.el/bootstrap.el"))
+      (bootstrap-version 3))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-;; do not load outdated elc files
-(setq load-prefer-newer t)
-
-;; make common libs extensions available
-(require 'cl-lib)
-
-;; initialize the package system
-(package-initialize)
-
-;; only load use-package when compiling to reduce load-time
-(eval-when-compile
-  (add-to-list 'load-path (expand-file-name "libs/use-package" user-emacs-directory))
-  (require 'use-package))
+;; bootstrap use-package
+(straight-use-package 'use-package)
 
 ;; warn when loading a package takes too long
 (setq use-package-verbose t
       use-package-minimum-reported-time 0.01)
 
-;; fix packages not installing because list is out of date
-(defvar my/refreshed-package-list nil
-  "This wil be t if the package list has been refreshed.")
-
-;;;###autoload
-(defun my/ensure-refreshed ()
-  "Ensure that the package list gets refreshed this startup"
-  (unless my/refreshed-package-list
-    (package-refresh-contents)
-    (setq my/refreshed-package-list t)))
-
-(advice-add 'package-install
-            :before
-            (lambda (&rest args)
-              (my/ensure-refreshed)))
-
 ;; keep the mode-line clean; provides the :delight keyword in use-package
 (use-package delight
-  :ensure t)
-
-;; some package claim they benefit from compilation, so ensure it happens
-(use-package auto-compile
-  :ensure t
-  :config
-  (auto-compile-on-save-mode)
-  (auto-compile-on-load-mode))
+  :straight t)
 
 ;; prevent init-file polution by custom
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
