@@ -2,6 +2,7 @@
 .backup/
 .cache/
 .temp/
+.undo/
 custom.el
 /auto-save-list/
 /elpa/

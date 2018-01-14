@@ -23,7 +23,9 @@
 (ryo-modal-keys
  (:norepeat t)
  ("f" forward-to-word :name "forward to word")
- ("b" "M-b" :name "backward to word"))
+ ("b" "M-b" :name "backward to word")
+ ("{" "M-{" :name "next paragraph")
+ ("}" "M-}" :name "prev paragraph"))
 
 ;; modal insert editing maps
 (ryo-modal-keys
@@ -40,9 +42,13 @@
  ("p" "C-y" :name "paste")
  ("x" delete-char :name "delete char"))
 
-;; undo/redo
+;; window navigation
 (ryo-modal-keys
- ("u" "C-/" :name "undo")
- ("U" "M-/" :name "repeat"))
+ (:norepeat t)
+ ("w o" switch-to-buffer-other-window :name "switch other window")
+ ("w q" delete-window :name "close window")
+ ("w u" winner-undo :name "undo window config")
+ ("w U" winner-redo :name "redo window config")
+ ("w w" "C-x o" :name "other window"))
 
 (provide 'hge-ryo-bindings)

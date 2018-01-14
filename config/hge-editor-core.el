@@ -57,4 +57,32 @@
   (setq ryo-modal-cursor-color "DarkGoldenrod2"
         ryo-modal-cursor-type 'box))
 
+;; provide graphical tools to undo
+(use-package undo-tree
+  :ensure t
+  :ryo
+  (:norepeat t)
+  ("u" undo-tree-undo)
+  ("U" undo-tree-redo)
+  :config
+  (defconst user-undo-directory
+    (file-name-as-directory (concat user-emacs-directory ".undo")))
+  (when (not (file-exists-p user-undo-directory))
+    (make-directory user-undo-directory t))
+  (setq undo-tree-history-directory-alist `(("." . ,user-undo-directory))
+        undo-tree-auto-save-history t
+        undo-tree-visualizer-timestamps t)
+  (global-undo-tree-mode))
+
+;; keep track of previously opened files
+(use-package recentf
+  :ensure t
+  :config
+  (setq recentf-max-saved-items 1000
+        recentf-auto-cleanup 300
+        recentf-save-file (expand-file-name "recentf" user-cache-directory)
+        recentf-exclude '("/tmp/"
+                          "/Maildir/"))
+  (recentf-mode 1))
+
 (provide 'hge-editor-core)
