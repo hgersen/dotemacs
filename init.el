@@ -30,6 +30,7 @@
 (defvar my/refreshed-package-list nil
   "This wil be t if the package list has been refreshed.")
 
+;;;###autoload
 (defun my/ensure-refreshed ()
   "Ensure that the package list gets refreshed this startup"
   (unless my/refreshed-package-list

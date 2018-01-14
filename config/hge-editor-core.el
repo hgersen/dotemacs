@@ -1,9 +1,11 @@
 ;; wrappers for entering and exiting
+;;;###autoload
 (defun my/enable-ryo-modal-mode ()
   "Explicitly enables ryo-modal mode"
   (interactive)
   (ryo-modal-mode 1))
 
+;;;###autoload
 (defun my/disable-ryo-modal-mode ()
   "Explicitly disables ryo-modal mode"
   (interactive)
@@ -23,11 +25,6 @@
   (which-key-mode)
   :config
   (setq which-key-idle-delay 0.4))
-
-;; useful extensions for emacs
-(use-package crux
-  :ensure nil
-  :load-path "libs/crux")
 
 ;; build in package misc for word-movement
 (use-package misc
@@ -87,7 +84,7 @@
 
   ;; modal insert editing maps
   ("o" my/disable-ryo-modal-mode :name "insert")
-  ("O" crux-move-beginning-of-line :name "insert at start of line" :exit t)
+;  ("O" crux-move-beginning-of-line :name "insert at start of line" :exit t)
   ("a" forward-char :name "append" :exit t)
   ("A" move-end-of-line :name "append end of line" :exit t)
 
