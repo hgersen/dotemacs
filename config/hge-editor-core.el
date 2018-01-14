@@ -29,10 +29,14 @@
   :ensure nil
   :load-path "libs/crux")
 
+;; build in package misc for word-movement
+(use-package misc
+  :ensure nil)
+
 ;; roll my own modal mode
 (use-package ryo-modal
   :ensure nil
-  ;; demand is needed to prevent errors; not sure why
+  ;; demand is needed to prevent errors; relating to :ryo-keyword
   :demand t
   :delight
   :load-path "/home/hge/elisp/ryo-modal"
@@ -77,6 +81,10 @@
   ("e" "C-p" :name "prev line")
   ("i" "C-f" :name "next char")
 
+  ;; word movements
+  ("f" forward-to-word :name "forward to word")
+  ("b" "M-b" :name "backward to word")
+
   ;; modal insert editing maps
   ("o" my/disable-ryo-modal-mode :name "insert")
   ("O" crux-move-beginning-of-line :name "insert at start of line" :exit t)
@@ -91,4 +99,4 @@
   ("u" "C-/" :name "undo")
   ("U" "M-/" :name "repeat"))
 
-(provide 'hge-ryo-core)
+(provide 'hge-editor-core)
