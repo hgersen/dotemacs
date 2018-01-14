@@ -36,7 +36,8 @@
 
 ;; switch to dark theme by default
 (use-package monokai-theme
-  :ensure t
+  :ensure nil
+  :load-path "libs/monokai-emacs"
   :config
   (load-theme 'monokai t))
 

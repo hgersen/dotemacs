@@ -5953,9 +5953,4 @@ Also affects 'linum-mode' background."
 
 (provide-theme 'monokai)
 
-;; Local Variables:
-;; no-byte-compile: t
-;; fill-column: 95
-;; End:
-
 ;;; monokai-theme.el ends here

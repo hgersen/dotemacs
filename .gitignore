@@ -1,3 +1,4 @@
+*.elc
 .backup/
 .cache/
 .temp/
