@@ -29,10 +29,10 @@
 
 ;; modal insert editing maps
 (ryo-modal-keys
- ("o" my/disable-ryo-modal-mode :name "insert")
- ("O" my/move-beginning-of-line :name "insert at start of line" :exit t)
- ("h" my/open-line-below :name "open line below" :exit t)
- ("H" my/open-line-above :name "open line above" :exit t)
+ ("h" my/disable-ryo-modal-mode :name "insert here")
+ ("H" my/move-beginning-of-line :name "insert at start of line" :exit t)
+ ("o" my/open-line-below :name "open line below" :exit t)
+ ("O" my/open-line-above :name "open line above" :exit t)
  ("a" forward-char :name "append" :exit t)
  ("A" move-end-of-line :name "append end of line" :exit t))
 
@@ -47,8 +47,24 @@
  (:norepeat t)
  ("w o" switch-to-buffer-other-window :name "switch other window")
  ("w q" delete-window :name "close window")
+ ("w k" windmove-left :name "focus left")
+ ("w n" windmove-down :name "focus down")
+ ("w e" windmove-up :name "focus up")
+ ("w i" windmove-right :name "focus right")
  ("w u" winner-undo :name "undo window config")
  ("w U" winner-redo :name "redo window config")
  ("w w" "C-x o" :name "other window"))
+
+;; implement modal editing using text object/operator relationship
+(let ((ryo-text-obj
+       '(;; single char style text object
+         ("l" mark-word :name "to end of word")
+         )))
+  (eval `(ryo-modal-keys
+          ;; basic operators
+          ("v" ,ryo-text-obj)
+          ("c" ,ryo-text-obj :then '(kill-region) :exit t)
+          ("d" ,ryo-text-obj :then '(kill-region))
+          ("y" ,ryo-text-obj :then '(copy-region-as-kill)))))
 
 (provide 'hge-ryo-bindings)

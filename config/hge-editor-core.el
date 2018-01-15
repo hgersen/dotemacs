@@ -48,13 +48,14 @@
   ;; remove ryo key word from which-key
   (push '((nil . "ryo:") . (nil . "")) which-key-replacement-alist)
 
+  ;; Emacs has point between characters; stick with bar to reflect this
   ;; cursor for insert mode
   (setq-default cursor-type 'bar)
   (set-cursor-color "chartreuse3")
 
   ;; cursor for ryo modal mode
   (setq ryo-modal-cursor-color "DarkGoldenrod2"
-        ryo-modal-cursor-type 'box))
+        ryo-modal-cursor-type 'bar))
 
 ;; provide graphical tools to undo
 (use-package undo-tree
