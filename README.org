@@ -1,18 +1,62 @@
 #+TITLE: Emacs Configuration
 
-This is an experiment to create an Emacs configuration with a [[https://www.vim.org][Vim]] style editing grammar without
-using [[https://www.emacswiki.org/emacs/Evil][Evil mode]]. It maintains Vim's concept of text object, operations and grammar, but doesn't use
-the same keybindings. These reflects changes that are needed to have home row navigation using
-~knei~ as I use the [[https://colemakmods.github.io/mod-dh/][Colemak mod-DH]] keyboard layout
+This is an experiment to create an Emacs configuration with a [[https://www.vim.org][Vim]] style editing grammar
+without using [[https://www.emacswiki.org/emacs/Evil][Evil mode]]. It maintains Vim's concept of text object, operations and
+grammar, but doesn't use exactly the same keybindings. These reflects that there are key
+differences in the cursor position in [[https://www.gnu.org/software/emacs/][Emacs]] vs. Vim, which enable to reduce duplication.
+At the same time these bindings reflect that I want to have maintain home row navigation
+using ~knei~ as I use the [[https://colemakmods.github.io/mod-dh/][Colemak mod-DH]] keyboard layout
 
 * Core ideas
-This configuration uses the [[https://github.com/Kungsgeten/ryo-modal][ryo-modal]] package to set up a modal configuration in the form of a minor
-mode in combination with [[http://spacemacs.org/][spacemacs]] like transient modes using [[https://github.com/abo-abo/hydra][hydra]]. This allows me to create my own
-bindings that can be bound to a sequence of characters of my own choosing instead of having to fight
-~Evil~.
+This configuration uses the [[https://github.com/Kungsgeten/ryo-modal][ryo-modal]] package to set up a modal configuration in the form
+of a minor mode in combination with [[http://spacemacs.org/][spacemacs]] like transient modes using [[https://github.com/abo-abo/hydra][hydra]]. This
+allows me to create my own bindings that can be bound to a sequence of characters of my
+own choosing instead of having to fight ~Evil~ to do what I want.
 
 To ensure that this configuration is reproducible between different machines packages are
 installed and managed using [[https://github.com/raxod502/straight.el][straight.el]], which integrates well with [[https://github.com/jwiegley/use-package][use-package]].
+
+Vim has the position of the cursor on a characters. This choice requires two keybindings
+for similar operations, i.e. 'insert before (i)' and 'append after(a)'. This same
+duplication is also present in other keybindings, such as find char (f) and find to (t) or
+even in the paste commands. For Emacs this is very different as it defines the cursor
+position (aka "point") as being between characters. This allows to sometimes do these same
+operations using a single binding freeing up those keys for other more useful
+functionality.
+
+* Planned keybindings
+Only the commands labeled with * in the table below are intended to drop into insert mode
+(=native Emacs)
+
+| key | key | command                 | command for capital            | related vim bindings |
+|-----+-----+-------------------------+--------------------------------+----------------------|
+| s   | S   | surround                | start at beginning*            | I, (vim-surround)    |
+| a   | A   | add/append*             | append at line end*            | i,a,A                |
+| f   | F   | from                    | from start of line             | v,V                  |
+| l   | L   | last/end                | last/end (white separated      | e,E                  |
+| t   | T   | to                      | to backwards                   | f,F,t,T              |
+| ,   | ;   | repeat                  | repeat in reverse direction    | ; and , (reversed)   |
+| y   | Y   | yank                    | yank line                      | y,Y                  |
+| v   | V   | view window/file/buffer |                                | not present?         |
+| w   | W   | word start              | word start (white separated)   | w,W                  |
+| b   | B   | back to word start      | back to word (white separated) | b,B                  |
+| u   | U   | undo                    | redo                           | u,C-r                |
+| /   | ?   | search forward          | search backward                | / and ?              |
+| h   | H   | hop to next find        | hop to previous find           | n,N                  |
+| x   | X   | exchange character      |                                | r (still needed?)    |
+| r   | R   | remove char             | remove char backwards          | x,X                  |
+| k   | K   | left                    | previous sentence              | h,(                  |
+| n   | N   | down                    | forward paragraph              | j,}                  |
+| e   | E   | up                      | backward paragraph             | k,{                  |
+| i   | I   | right                   | next sentence                  | l,)                  |
+| c   | C   | change                  | change to EOL                  | c,C                  |
+| d   | D   | delete                  | delete to EOL                  | d,D                  |
+| p   | P   | paste                   |                                | p                    |
+| o   | O   | open below*             | open above*                    | o,O                  |
+| g   | G   | go                      |                                | g                    |
+| q   | Q   | quit mode               |                                | <escape>             |
+| z   | Z   |                         |                                |                      |
+| m   | M   | set mark                |                                | m                    |
 
 * Credits
 A large part of the code in this repo is based on the Emacs configation of [[https://github.com/sriramkswamy/dotemacs][sriramkswamy]], who has
