@@ -30,8 +30,8 @@ Only the commands labeled with * in the table below are intended to drop into in
 
 | key | key | command                 | command for capital            | related vim bindings |
 |-----+-----+-------------------------+--------------------------------+----------------------|
-| s   | S   | surround                | start at beginning*            | I, (vim-surround)    |
-| a   | A   | add/append*             | append at line end*            | i,a,A                |
+| s   | S   | start edit*             |                                | i                    |
+| a   | A   | add at start of line*   | add at end of line*            | I,A                  |
 | f   | F   | from                    | from start of line             | v,V                  |
 | l   | L   | last/end                | last/end (white separated      | e,E                  |
 | t   | T   | to                      | to backwards                   | f,F,t,T              |
@@ -54,7 +54,6 @@ Only the commands labeled with * in the table below are intended to drop into in
 | p   | P   | paste                   |                                | p                    |
 | o   | O   | open below*             | open above*                    | o,O                  |
 | g   | G   | go                      |                                | g                    |
-| q   | Q   | quit mode               |                                | <escape>             |
 | z   | Z   |                         |                                |                      |
 | m   | M   | set mark                |                                | m                    |
 

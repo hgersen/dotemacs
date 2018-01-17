@@ -22,47 +22,55 @@
 ;; word movements
 (ryo-modal-keys
  (:norepeat t)
- ("f" forward-to-word :name "forward to word")
+ ("w" forward-to-word :name "forward to word")
  ("b" "M-b" :name "backward to word")
- ("{" "M-{" :name "next paragraph")
- ("}" "M-}" :name "prev paragraph"))
+ ("E" "M-{" :name "next paragraph")
+ ("N" "M-}" :name "prev paragraph"))
 
 ;; modal insert editing maps
 (ryo-modal-keys
- ("h" my/disable-ryo-modal-mode :name "insert here")
- ("H" my/move-beginning-of-line :name "insert at start of line" :exit t)
+ ("s" my/disable-ryo-modal-mode :name "insert here")
+ ("a" my/move-start-of-line :name "add at start of line" :exit t)
+ ("A" move-end-of-line :name "add at end of line" :exit t)
  ("o" my/open-line-below :name "open line below" :exit t)
- ("O" my/open-line-above :name "open line above" :exit t)
- ("a" forward-char :name "append" :exit t)
- ("A" move-end-of-line :name "append end of line" :exit t))
+ ("O" my/open-line-above :name "open line above" :exit t))
 
 ;; modal editing
 (ryo-modal-keys
  (:norepeat t)
  ("p" "C-y" :name "paste")
- ("x" delete-char :name "delete char"))
+ ("r" delete-char :name "remove char")
+ ("R" backward-delete-char-untabify :name "remove char backwards")
+ ("d d" kill-whole-line :name "delete whole line"))
 
 ;; window navigation
 (ryo-modal-keys
  (:norepeat t)
- ("w o" switch-to-buffer-other-window :name "switch other window")
- ("w q" delete-window :name "close window")
- ("w k" windmove-left :name "focus left")
- ("w n" windmove-down :name "focus down")
- ("w e" windmove-up :name "focus up")
- ("w i" windmove-right :name "focus right")
- ("w u" winner-undo :name "undo window config")
- ("w U" winner-redo :name "redo window config")
- ("w w" "C-x o" :name "other window"))
+ ("v o" switch-to-buffer-other-window :name "switch other window")
+ ("v c" delete-window :name "close window")
+ ("v k" windmove-left :name "focus left")
+ ("v n" windmove-down :name "focus down")
+ ("v e" windmove-up :name "focus up")
+ ("v i" windmove-right :name "focus right")
+ ("v u" winner-undo :name "undo window config")
+ ("v U" winner-redo :name "redo window config")
+ ("v v" "C-x o" :name "other window"))
 
 ;; implement modal editing using text object/operator relationship
 (let ((ryo-text-obj
        '(;; single char style text object
-         ("l" mark-word :name "to end of word")
+         ("k" my/mark-backward-char :name "previous char(s)")
+         ("i" my/mark-forward-char :name "next char(s)")
+         ("b" my/mark-backward-word :name "to start of word")
+         ("w" my/mark-forward-word :name "to end of word")
+         ("e" my/mark-backward-line :name "to previous line")
+         ("n" my/mark-forward-line :name "to next line")
+         ("E" my/mark-backward-paragraph :name "to start of paragraph")
+         ("N" my/mark-forward-paragraph :name "to end of paragraph")
          )))
   (eval `(ryo-modal-keys
           ;; basic operators
-          ("v" ,ryo-text-obj)
+          ("f" ,ryo-text-obj)
           ("c" ,ryo-text-obj :then '(kill-region) :exit t)
           ("d" ,ryo-text-obj :then '(kill-region))
           ("y" ,ryo-text-obj :then '(copy-region-as-kill)))))
