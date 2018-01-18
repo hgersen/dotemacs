@@ -17,7 +17,9 @@
  ("k" "C-b" :name "prev char")
  ("n" "C-n" :name "next line")
  ("e" "C-p" :name "prev line")
- ("i" "C-f" :name "next char"))
+ ("i" "C-f" :name "next char")
+ ("s" my/move-start-of-line :name "to start of line")
+ ("S" move-end-of-line :name "to end of line"))
 
 ;; word movements
 (ryo-modal-keys
@@ -29,11 +31,10 @@
 
 ;; modal insert editing maps
 (ryo-modal-keys
- ("s" my/disable-ryo-modal-mode :name "insert here")
- ("a" my/move-start-of-line :name "add at start of line" :exit t)
- ("A" move-end-of-line :name "add at end of line" :exit t)
- ("o" my/open-line-below :name "open line below" :exit t)
- ("O" my/open-line-above :name "open line above" :exit t))
+ ("o" my/disable-ryo-modal-mode :name "insert here")
+ ("O" move-end-of-line :name "insert at end of line" :exit t)
+ ("l" my/open-line-below :name "open line below" :exit t)
+ ("L" my/open-line-above :name "open line above" :exit t))
 
 ;; modal editing
 (ryo-modal-keys
@@ -70,6 +71,7 @@
          )))
   (eval `(ryo-modal-keys
           ;; basic operators
+          ("=" ,ryo-text-obj :then '(indent-region))
           ("f" ,ryo-text-obj)
           ("c" ,ryo-text-obj :then '(kill-region) :exit t)
           ("d" ,ryo-text-obj :then '(kill-region))

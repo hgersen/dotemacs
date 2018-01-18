@@ -85,4 +85,21 @@
                           "/Maildir/"))
   (recentf-mode 1))
 
+;; folding
+(use-package vimish-fold
+  :straight t
+  :ryo
+  (:norepeat t)
+  ("z f" vimish-fold :name "fold region")
+  ("z d" vimish-fold-delete :name "delete")
+  ("z D" vimish-fold-delete-all :name "delete all")
+  ("z n" vimish-fold-next-fold :name "next fold")
+  ("z e" vimish-fold-previous-fold :name "previous fold")
+  ("z o" vimish-fold-unfold :name "open")
+  ("z c" vimish-fold-refold :name "close")
+  ("z u" vimish-fold-unfold-all :name "unfold all")
+  ("z r" vimish-fold-refold-all :name "refold all")
+  :config
+  (vimish-fold-global-mode 1))
+
 (provide 'hge-editor-core)

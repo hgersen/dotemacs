@@ -33,7 +33,8 @@ point reaches the beginning or end of the buffer, stop there."
 (defun my/open-line-above ()
   "Open line above"
   (interactive)
-  (newline)
+  (move-beginning-of-line nil)
+  (newline-and-indent)
   (forward-line -1)
   (indent-for-tab-command))
 

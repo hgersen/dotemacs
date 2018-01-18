@@ -26,20 +26,22 @@ functionality.
 
 * Planned keybindings
 Only the commands labeled with * in the table below are intended to drop into insert mode
-(=native Emacs)
+(=native Emacs).
 
 | key | key | command                 | command for capital            | related vim bindings |
 |-----+-----+-------------------------+--------------------------------+----------------------|
-| s   | S   | start edit*             |                                | i                    |
-| a   | A   | add at start of line*   | add at end of line*            | I,A                  |
+| o   | O   | open*                   | open at end*                   | a,i,A                |
+| l   | L   | line below*             | line above*                    | o,O                  |
+| s   | S   | start line              | line end                       | 0,$                  |
+| w   | W   | word start              | word start (white separated)   | w,W                  |
+| b   | B   | back to word start      | back to word (white separated) | b,B                  |
+| a   | A   | after word              | after word (white separated)   | e,E                  |
 | f   | F   | from                    | from start of line             | v,V                  |
-| l   | L   | last/end                | last/end (white separated      | e,E                  |
 | t   | T   | to                      | to backwards                   | f,F,t,T              |
 | ,   | ;   | repeat                  | repeat in reverse direction    | ; and , (reversed)   |
 | y   | Y   | yank                    | yank line                      | y,Y                  |
+| p   | P   | paste                   |                                | p                    |
 | v   | V   | view window/file/buffer |                                | not present?         |
-| w   | W   | word start              | word start (white separated)   | w,W                  |
-| b   | B   | back to word start      | back to word (white separated) | b,B                  |
 | u   | U   | undo                    | redo                           | u,C-r                |
 | /   | ?   | search forward          | search backward                | / and ?              |
 | h   | H   | hop to next find        | hop to previous find           | n,N                  |
@@ -51,8 +53,6 @@ Only the commands labeled with * in the table below are intended to drop into in
 | i   | I   | right                   | next sentence                  | l,)                  |
 | c   | C   | change                  | change to EOL                  | c,C                  |
 | d   | D   | delete                  | delete to EOL                  | d,D                  |
-| p   | P   | paste                   |                                | p                    |
-| o   | O   | open below*             | open above*                    | o,O                  |
 | g   | G   | go                      |                                | g                    |
 | z   | Z   |                         |                                |                      |
 | m   | M   | set mark                |                                | m                    |
