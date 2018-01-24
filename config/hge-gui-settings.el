@@ -50,15 +50,15 @@
   :straight t
   :config
   (setq telephone-line-lhs
-        '((ryo . (telephone-line-ryo-modal-segment))
-          (accent . (telephone-line-vc-segment
+        ;'((ryo . (telephone-line-ryo-modal-segment))
+          '((accent . (telephone-line-vc-segment
                      telephone-line-process-segment))
           (nil . (telephone-line-minor-mode-segment
                   telephone-line-buffer-segment))))
   (setq telephone-line-rhs
         '((nil . (telephone-line-misc-info-segment))
-          (accent . (telephone-line-major-mode-segment))
-          (ryo . (telephone-line-airline-position-segment))))
+          (accent . (telephone-line-major-mode-segment))))
+;          (ryo . (telephone-line-airline-position-segment))))
   (telephone-line-mode t))
 
 (provide 'hge-gui-settings)

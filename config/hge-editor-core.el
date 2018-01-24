@@ -1,21 +1,138 @@
-;; wrappers for entering and exiting
-;;;###autoload
-(defun my/enable-ryo-modal-mode ()
-  "Explicitly enables ryo-modal mode"
-  (interactive)
-  (ryo-modal-mode 1))
+;; define macro to define delete operation
+(defmacro defvim-delop (name &rest forms)
+  (declare (indent 1))
+  `(defun ,name (count)
+     (interactive "p")
+     ,@forms
+     (call-interactively 'kill-region)))
 
-;;;###autoload
-(defun my/disable-ryo-modal-mode ()
-  "Explicitly disables ryo-modal mode"
-  (interactive)
-  (ryo-modal-mode -1))
+;; define macro for copy(yank) operations; returns to normal mode
+(defmacro defvim-yankop-ret (name &rest forms)
+  (declare (indent 1))
+  `(defun ,name (count)
+     (interactive "p")
+     ,@forms
+     (call-interactively 'copy-region-as-kill)
+     (setq current-prefix-arg nil)
+     (hydra-normal-mode/body)))
 
-;; enable the use of spacemacs like transient states
+;; define macro for delete operation that returns to normal mode
+(defmacro defvim-delop-ret (name &rest forms)
+  (declare (indent 1))
+  `(defun ,name (count)
+     (interactive "p")
+     ,@forms
+     (call-interactively 'kill-region)
+     (setq current-prefix-arg nil)
+     (hydra-normal-mode/body)))
+
+;; build in package misc for word-movement
+(use-package misc
+  :ensure nil)
+
+;; used to provide both modal modes and spacemacs like transient states
 (use-package hydra
   :straight t
   :init
   (setq hydra-if-helpful t))
+
+;; provide keybindings for vim-like "normal" mode
+(use-package my/hydra-normal-mode
+  :ensure nil
+  ;; the *version takes precedence over other minor mode keybindings
+  :bind* ("<escape>" . hydra-normal-mode/body)
+  :init
+  (provide 'my/hydra-normal-mode)
+  :config
+
+  (defhydra hydra-normal-mode (:foreign-keys warn)
+    ;; motions
+    ("k" backward-char "prev char")
+    ("n" next-line "next line")
+    ("e" previous-line "prev line")
+    ("i" forward-char "next char")
+    ("w" forward-to-word "forward to word")
+    ("b" backward-word "backwards to word")
+    ("N" forward-paragraph "next paragraph")
+    ("E" backward-paragraph "prev paragraph")
+
+    ;; operators
+    ("c" hydra-change-operations/body "change" :exit t)
+    ("d" hydra-delete-operations/body "delete" :exit t)
+    ("y" hydra-yank-operations/body "copy" :exit t)
+
+    ;; actions
+    ("z" hydra-vimish-fold/body "folding" :exit t)
+
+    ;; exit
+    ("<escape>" nil "quit to insert"))
+
+  ;; define command that delete text-objects
+  (defvim-delop h-del-char-backward (my/mark-backward-char count))
+  (defvim-delop h-del-char-forward (my/mark-forward-char count))
+  (defvim-delop h-del-word-backward (my/mark-backward-word count))
+  (defvim-delop h-del-word-forward (my/mark-forward-word count))
+  (defvim-delop h-del-line-backward (my/mark-backward-line count))
+  (defvim-delop h-del-line-forward (my/mark-forward-line count))
+  (defvim-delop h-del-paragraph-backward (my/mark-backward-paragraph count))
+  (defvim-delop h-del-paragraph-forward (my/mark-forward-paragraph count))
+
+  ;; copy operations; drop to insert mode
+  (defhydra hydra-change-operations (:foreign-keys warn :exit t)
+    "copy"
+    ("k" h-del-char-backward :exit t)
+    ("n" h-del-line-forward :exit t)
+    ("e" h-del-line-backward :exit t)
+    ("i" h-del-char-forward :exit t)
+    ("w" h-del-word-forward :exit t)
+    ("b" h-del-word-backward :exit t)
+    ("N" h-del-paragraph-forward :exit t)
+    ("E" h-del-paragraph-backward :exit t))
+
+  ;; define commands that delete text-objects, but return to normal mode
+  (defvim-delop-ret h-del-char-backward-ret (my/mark-backward-char count))
+  (defvim-delop-ret h-del-char-forward-ret (my/mark-forward-char count))
+  (defvim-delop-ret h-del-word-backward-ret (my/mark-backward-word count))
+  (defvim-delop-ret h-del-word-forward-ret (my/mark-forward-word count))
+  (defvim-delop-ret h-del-line-backward-ret (my/mark-backward-line count))
+  (defvim-delop-ret h-del-line-forward-ret (my/mark-forward-line count))
+  (defvim-delop-ret h-del-paragraph-backward-ret (my/mark-backward-paragraph count))
+  (defvim-delop-ret h-del-paragraph-forward-ret (my/mark-forward-paragraph count))
+
+  ;; delete operations; stay in normal mode
+  (defhydra hydra-delete-operations (:foreign-keys warn)
+    "delete"
+    ("k" h-del-char-backward-ret :exit t)
+    ("n" h-del-line-forward-ret :exit t)
+    ("e" h-del-line-backward-ret :exit t)
+    ("i" h-del-char-forward-ret :exit t)
+    ("w" h-del-word-forward-ret :exit t)
+    ("b" h-del-word-backward-ret :exit t)
+    ("N" h-del-paragraph-forward-ret :exit t)
+    ("E" h-del-paragraph-backward-ret :exit t))
+
+  ;; define commands that yank text-objects, but return to normal mode
+  (defvim-yankop-ret h-yank-char-backward-ret (my/mark-backward-char count))
+  (defvim-yankop-ret h-yank-char-forward-ret (my/mark-forward-char count))
+  (defvim-yankop-ret h-yank-word-backward-ret (my/mark-backward-word count))
+  (defvim-yankop-ret h-yank-word-forward-ret (my/mark-forward-word count))
+  (defvim-yankop-ret h-yank-line-backward-ret (my/mark-backward-line count))
+  (defvim-yankop-ret h-yank-line-forward-ret (my/mark-forward-line count))
+  (defvim-yankop-ret h-yank-paragraph-backward-ret (my/mark-backward-paragraph count))
+  (defvim-yankop-ret h-yank-paragraph-forward-ret (my/mark-forward-paragraph count))
+  (defvim-yankop-ret h-yank-whole-line-ret (kill-whole-line count))
+
+  ;; delete operations; stay in normal mode
+  (defhydra hydra-yank-operations (:foreign-keys warn)
+    "yank"
+    ("k" h-yank-char-backward-ret :exit t)
+    ("n" h-yank-line-forward-ret :exit t)
+    ("e" h-yank-line-backward-ret :exit t)
+    ("i" h-yank-char-forward-ret :exit t)
+    ("w" h-yank-word-forward-ret :exit t)
+    ("b" h-yank-word-backward-ret :exit t)
+    ("N" h-yank-paragraph-forward-ret :exit t)
+    ("E" h-yank-paragraph-backward-ret :exit t)))
 
 ;; provide helpful hints
 (use-package which-key
@@ -26,12 +143,9 @@
   :config
   (setq which-key-idle-delay 0.4))
 
-;; build in package misc for word-movement
-(use-package misc
-  :ensure nil)
-
 ;; roll my own modal mode
 (use-package ryo-modal
+  :disabled t
   :straight t
   ;; demand is needed to prevent errors; relating to :ryo-keyword
   :demand t
@@ -60,10 +174,10 @@
 ;; provide graphical tools to undo
 (use-package undo-tree
   :straight t
-  :ryo
-  (:norepeat t)
-  ("u" undo-tree-undo)
-  ("U" undo-tree-redo)
+                                        ;  :ryo
+                                        ;  (:norepeat t)
+                                        ;  ("u" undo-tree-undo)
+                                        ;  ("U" undo-tree-redo)
   :config
   (defconst user-undo-directory
     (file-name-as-directory (concat user-emacs-directory ".undo")))
@@ -88,18 +202,17 @@
 ;; folding
 (use-package vimish-fold
   :straight t
-  :ryo
-  (:norepeat t)
-  ("z f" vimish-fold :name "fold region")
-  ("z d" vimish-fold-delete :name "delete")
-  ("z D" vimish-fold-delete-all :name "delete all")
-  ("z n" vimish-fold-next-fold :name "next fold")
-  ("z e" vimish-fold-previous-fold :name "previous fold")
-  ("z o" vimish-fold-unfold :name "open")
-  ("z c" vimish-fold-refold :name "close")
-  ("z u" vimish-fold-unfold-all :name "unfold all")
-  ("z r" vimish-fold-refold-all :name "refold all")
   :config
+  (defhydra hydra-vimish-fold ()
+    ("f" vimish-fold "fold region")
+    ("d" vimish-fold-delete "delete")
+    ("D" vimish-fold-delete-all "delete all")
+    ("n" vimish-fold-next-fold "next fold")
+    ("e" vimish-fold-previous-fold "previous fold")
+    ("o" vimish-fold-unfold "open")
+    ("c" vimish-fold-refold "close")
+    ("u" vimish-fold-unfold-all "unfold all")
+    ("r" vimish-fold-refold-all "refold all"))
   (vimish-fold-global-mode 1))
 
 (provide 'hge-editor-core)

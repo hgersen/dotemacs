@@ -57,6 +57,11 @@
  ("v U" winner-redo :name "redo window config")
  ("v v" "C-x o" :name "other window"))
 
+(ryo-modal-keys
+ (:norepeat t)
+ ("g" hydra-text-objects/body :then '(my-message) )
+ ("t" hydra-text-objects/body :name "select"))
+
 ;; implement modal editing using text object/operator relationship
 (let ((ryo-text-obj
        '(;; single char style text object
