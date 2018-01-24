@@ -1,3 +1,25 @@
+;; macros to reduce code duplication
+(defmacro defhymop (name body operation back-to &optional docstring &rest heads)
+  "wrapper for defhydra that performs region operation on selected text-objects"
+
+  (declare (indent defun))
+  ;; deal with no supplied doctring
+  (setq hym-heads (copy-tree heads))
+  (unless (stringp docstring)
+    (setq hym-heads (cons docstring hym-heads))
+    (setq docstring "hymop"))
+  `(defhydra ,name ,body ,docstring
+     ;; add interactive functions that operate on marked regions
+     ,(mapcar (lambda (head)
+                `(,(car head) (lambda (count)
+                                (interactive "p")
+                                (,@(cdr head) count)
+                                (call-interactively (quote ,operation))
+                                ,(when back-to
+                                   `((setq current-prefix-arg nil)
+                                     (,back-to))))
+                  :exit t)) hym-heads)))
+
 ;; define macro to define delete operation
 (defmacro defvim-delop (name &rest forms)
   (declare (indent 1))
