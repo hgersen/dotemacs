@@ -1,3 +1,5 @@
+;;;  -*- coding: utf-8; lexical-binding: t; -*-
+
 ;; Increase Garbage Collection to ease startup
 (setq gc-cons-threshold (* 500 1024 1024))
 
@@ -136,10 +138,10 @@
 (add-to-list 'load-path (expand-file-name "config" user-emacs-directory))
 
 ;; load additional settings from configuration files
-(use-package hge-editor-core :ensure nil)
+(use-package hge-core-packages :ensure nil)
 (use-package hge-gui-settings :ensure nil)
-(use-package hge-ryo-functions :ensure nil)
-;(use-package hge-ryo-bindings :ensure nil)
+(use-package hge-xahfly-functions :ensure nil)
+(use-package hge-ryo-bindings :ensure nil)
 
 ;; reduce garbage collection to happen often; threshold at 5MB
 (add-hook 'after-init-hook (lambda () (setq gc-cons-threshold (* 5 1024 1024))))

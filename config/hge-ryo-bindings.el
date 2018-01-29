@@ -1,85 +1,222 @@
-;; ryo modal digit mappings
-(ryo-modal-keys
- (:norepeat t)
- ("1" "M-1" :name "1")
- ("2" "M-2" :name "2")
- ("3" "M-3" :name "3")
- ("4" "M-4" :name "4")
- ("5" "M-5" :name "5")
- ("6" "M-6" :name "6")
- ("7" "M-7" :name "7")
- ("8" "M-8" :name "8")
- ("9" "M-9" :name "9"))
+;;;  -*- coding: utf-8; lexical-binding: t; -*-
 
-;; modal movement
+;; normal mode mappings
 (ryo-modal-keys
- (:norepeat t)
- ("k" "C-b" :name "prev char")
- ("n" "C-n" :name "next line")
- ("e" "C-p" :name "prev line")
- ("i" "C-f" :name "next char")
- ("s" my/move-start-of-line :name "to start of line")
- ("S" move-end-of-line :name "to end of line"))
+ ;; numbers
+ ("1" pop-global-mark)
+ ("2" xah-pop-local-mark-ring)
+ ("3" delete-other-windows)
+ ("4" split-window-below)
+ ("5" delete-window)
+ ("6" xah-select-block)
+ ("7" xah-select-line)
+ ("8" xah-extend-selection)
+ ("9" xah-select-text-in-quote)
+ ("0" delete-char)
 
-;; word movements
+ ;; left hand
+ ("q" xah-reformat-lines :name "reformat lines")
+ ("w" xah-shrink-whitespaces :name "shrink whitespace")
+ ("f" backward-kill-word :name "kill word backward")
+ ("p" kill-word :name "kill word")
+ ("v" set-mark-command :name "set mark")
+ ("a" execute-extended-command :name "M-x")
+ ("r" open-line :name "open line")
+ ("s" xah-delete-backward-char-or-bracket-text :name "delete char or bracket")
+ ("t" my/enable-ryo-modal-mode :name "insert" :exit t)
+ ("g" xah-delete-current-text-block :name "delete current block or selection")
+ ("z" xah-comment-dwim :name "comment")
+ ("x" xah-cut-line-or-region :name "cut line or region")
+ ("c" xah-copy-line-or-region :name "copy line or region")
+ ("d" xah-paste-or-paste-previous :name "paste/paste previous")
+ ("b" xah-toggle-letter-case :name "toggle case")
+
+ ;; right hand
+ ;; ("j" undo :name "undo")
+ ("l" backward-word :name "back to word beginning")
+ ("u" previous-line :name "up line")
+ ("y" forward-word :name "forward word")
+ (";" xah-fly-insert-mode-activate-space-before :name "insert space then insert" :exit t)
+ ;; missing char in keymap
+ ("k" xah-beginning-of-line-or-block :name "beginning of line or paragraph")
+ ("n" backward-char :name "prev char")
+ ("e" next-line :name "next line")
+ ("i" forward-char :name "next char")
+ ("o" xah-end-of-line-or-block :name "end of line or paragraph")
+ ("-" xah-cycle-hyphen-underscore-space :name "cycle underscore/space/hyphen")
+ ("m" isearch-forward :name "search forward")
+ ("h" xah-backward-left-bracket :name "to prev bracket")
+ ("," xah-next-window-or-frame :name "next window or frame")
+ ("." xah-forward-right-bracket :name "to next bracket")
+ ("/" xah-goto-matching-bracket :name "to matching bracket"))
+
+;; leader key; equivalent to xah-fly-leader-key-map
 (ryo-modal-keys
- (:norepeat t)
- ("w" forward-to-word :name "forward to word")
- ("b" "M-b" :name "backward to word")
- ("E" "M-{" :name "next paragraph")
- ("N" "M-}" :name "prev paragraph"))
+ ("SPC"
+  (("3" delete-window)
+   ("4" split-window-right)
+   ("5" balance-windows)
+   ("9" ispell-word)
+   ("a" mark-whole-buffer)
+   ("c" xah-search-current-word)
+   ("w" save-buffer)
+   ("b" switch-to-buffer)
+   ("x" xah-cut-all-or-region)
+   ("." repeat))))
 
-;; modal insert editing maps
+;; delete
 (ryo-modal-keys
- ("o" my/disable-ryo-modal-mode :name "insert here")
- ("O" move-end-of-line :name "insert at end of line" :exit t)
- ("l" my/open-line-below :name "open line below" :exit t)
- ("L" my/open-line-above :name "open line above" :exit t))
+ ("SPC d"
+  (("f" delete-frame))))
 
-;; modal editing
+;; evaluate and emacs; equivalent to xah-fly-w-keymap
 (ryo-modal-keys
- (:norepeat t)
- ("p" "C-y" :name "paste")
- ("r" delete-char :name "remove char")
- ("R" backward-delete-char-untabify :name "remove char backwards")
- ("d d" kill-whole-line :name "delete whole line"))
+ ("SPC e"
+  (("a" eval-buffer)
+   ("d" eval-defun)
+   ("s" eval-last-sexp)
+   ("c" eval-expression)
+   ("e" next-error)
+   ("u" previous-error)
+   ("r" eval-region)
+   ("q" save-buffers-kill-terminal)
+   ("f" xah-run-current-file))))
 
-;; window navigation
+;; find and files; equivalent to xah-fly-c-keymap
 (ryo-modal-keys
- (:norepeat t)
- ("v o" switch-to-buffer-other-window :name "switch other window")
- ("v c" delete-window :name "close window")
- ("v k" windmove-left :name "focus left")
- ("v n" windmove-down :name "focus down")
- ("v e" windmove-up :name "focus up")
- ("v i" windmove-right :name "focus right")
- ("v u" winner-undo :name "undo window config")
- ("v U" winner-redo :name "redo window config")
- ("v v" "C-x o" :name "other window"))
+ ("SPC f"
+  (("e" xah-open-in-external-app)
+   ("f" find-file)
+   ("b" bookmark-bmenu-list)
+   ("i" ibuffer)
+   ("t" xah-open-file-at-cursor)
+   ("r" recentf-open-files)
+   ("m" bookmark-set)
+   ("n" xah-new-empty-buffer)
+   ("d" xah-show-in-desktop)
+   ("l" xah-open-last-closed)
+   ("y" xah-list-recently-closed)
+   ("o" xah-open-file-fast)
+   ("w" write-file))))
 
+;; rectangle; equivalent to xah-fly-r-keymap
 (ryo-modal-keys
- (:norepeat t)
- ("g" hydra-text-objects/body :then '(my-message) )
- ("t" hydra-text-objects/body :name "select"))
+ ("SPC r"
+  (("SPC" rectangle-mark-mode)
+   ("a" apply-macro-to-region-lines)
+   ("s" kmacro-start-macro)
+   ("3" number-to-register)
+   ("4" increment-register)
+   ("b" xah-upcase-sentence)
+   ("c" replace-rectangle)
+   ("d" delete-rectangle)
+   ("e" call-last-kbd-macro)
+   ("k" kill-rectangle)
+   ("w" clear-rectangle)
+   ("l" xah-space-to-newline)
+   ("n" rectangle-number-lines)
+   ("o" open-rectangle)
+   ("f" kmacro-end-macro)
+   ("r" yank-rectangle)
+   ("q" xah-quote-lines)
+   ("x" delete-whitespace-rectangle))))
 
-;; implement modal editing using text object/operator relationship
-(let ((ryo-text-obj
-       '(;; single char style text object
-         ("k" my/mark-backward-char :name "previous char(s)")
-         ("i" my/mark-forward-char :name "next char(s)")
-         ("b" my/mark-backward-word :name "to start of word")
-         ("w" my/mark-forward-word :name "to end of word")
-         ("e" my/mark-backward-line :name "to previous line")
-         ("n" my/mark-forward-line :name "to next line")
-         ("E" my/mark-backward-paragraph :name "to start of paragraph")
-         ("N" my/mark-forward-paragraph :name "to end of paragraph")
-         )))
-  (eval `(ryo-modal-keys
-          ;; basic operators
-          ("=" ,ryo-text-obj :then '(indent-region))
-          ("f" ,ryo-text-obj)
-          ("c" ,ryo-text-obj :then '(kill-region) :exit t)
-          ("d" ,ryo-text-obj :then '(kill-region))
-          ("y" ,ryo-text-obj :then '(copy-region-as-kill)))))
+;; help mode; equivalent to xah-fly-h-keymap
+(ryo-modal-keys
+ ("SPC h"
+  (("z" Info-goto-emacs-command-node)
+   ("a" apropos-command)
+   ("b" describe-bindings)
+   ("c" describe-char)
+   ("d" apropos-documentation)
+   ("e" view-echo-area-messages)
+   ("f" describe-face)
+   ("g" info-lookup-symbol)
+   ("i" info)
+   ("," man)
+   ("k" describe-key)
+   ("K" Info-goto-emacs-key-command-node)
+   ("l" view-lossage)
+   ("m" xah-describe-major-mode)
+   ("n" describe-variable)
+   ("o" describe-language-environment)
+   ("p" finder-by-keyword)
+   ("r" apropos-variable)
+   ("s" describe-syntax)
+   ("t" elisp-index-search)
+   ("v" apropos-value)
+   ("/" describe-coding-system))))
+
+;; indent and completions
+(ryo-modal-keys
+ ("SPC i"
+  (("i" indent-for-tab-command)
+   ("c" complete-symbol)
+   ("t" indent-rigidly)
+   ("r" indent-region)
+   ("s" indent-sexp)
+   ;; temp
+   ("1" abbrev-prefix-mark)
+   ("2" edit-abbrevs)
+   ("3" expand-abbrev)
+   ("4" expand-region-abbrevs)
+   ("5" unexpand-abbrev)
+   ("6" add-global-abbrev)
+   ("7" add-mode-abbrev)
+   ("8" inverse-add-global-abbrev)
+   ("9" inverse-add-mode-abbrev)
+   ("0" expand-jump-to-next-slot)
+   ("=" expand-jump-to-previous-slot))))
+
+;; marks; equivalent to xah-fly-comma-keymap
+(ryo-modal-keys
+ ("SPC m"
+  (("m" xref-pop-marker-stack))))
+
+;; options and open; equivalent to xah-fly-n-keymap
+(ryo-modal-keys
+ ("SPC o"
+  (("SPC" whitespace-mode)
+   ("a" abbrev-mode)
+   ("," toggle-frame-fullscreen)
+   ("h" global-hl-line-mode)
+   ("l" global-display-line-numbers-mode)
+   ("v" visual-line-mode)
+   ("3" calendar)
+   ("4" calc)
+   ("t" shell-command)
+   ("r" shell-command-on-region)
+   ("d" toggle-debug-on-error)
+   ("c" toggle-case-fold-search)
+   ("e" eshell)
+   ("f" make-frame-command)
+   ("s" flyspell-buffer)
+   ("m" menu-bar-open)
+   ("w" toggle-word-wrap)
+   ("p" shell)
+   ("r" read-only-mode)
+   ("/" abort-recursive-edit))))
+
+;; surround objects; based on xah-fly-e-map
+(ryo-modal-keys
+ ("SPC s"
+  (("RET" insert-char)
+   ("e" xah-insert-emacs-quote)
+   ("w" xah-insert-brace)
+   ("s" xah-insert-paren)
+   ("t" xah-insert-square-bracket))))
+
+;; to; equivalent to xah-fly-t-keymap
+(ryo-modal-keys
+ ("SPC t"
+  (("SPC" xah-clean-whitespace)
+   ("TAB" move-to-column)
+   ("1" xah-clear-register-1)
+   ("2" xah-append-to-register-1)
+   ("3" xah-copy-to-register-1)
+   ("4" xah-paste-from-register-1)
+   ("d" xref-find-definitions)
+   ("l" goto-line)
+   ("w" xah-next-window-or-frame))))
 
 (provide 'hge-ryo-bindings)
