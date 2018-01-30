@@ -1,15 +1,5 @@
 ;;;  -*- coding: utf-8; lexical-binding: t; -*-
 
-(defun my/enable-ryo-modal-mode ()
-  "Explicitly enables ryo-modal mode"
-  (interactive)
-  (ryo-modal-mode 1))
-
-(defun my/disable-ryo-modal-mode ()
-  "Explicitly disables ryo-modal mode"
-  (interactive)
-  (ryo-modal-mode -1))
-
 ;; used to provide spacemacs like transient states
 (use-package hydra
   :disabled t
@@ -27,39 +17,33 @@
   (setq which-key-idle-delay 0.4))
 
 ;; roll my own modal mode
-(use-package ryo-modal
-  :straight t
-  ;; demand is needed to prevent errors; relating to :ryo-keyword
-  :demand t
+(use-package xahfly
+  :ensure nil
   :delight
   ;; the *version takes precedence over other minor mode keybindings
-  :bind* ("<escape>" . my/enable-ryo-modal-mode)
+  :bind* ("<escape>" . xahfly-command-mode-enable)
   ;; repeat needs to be bound to keymap
-  :bind (:map ryo-modal-mode-map
-              ("." . ryo-modal-repeat))
- :hook ((after-init . my/enable-ryo-modal-mode)
-        (text-mode . my/enable-ryo-modal-mode)
-        (prog-mode . my/enable-ryo-modal-mode))
-  :init
-  ;; remove ryo key word from which-key
-  (push '((nil . "ryo:") . (nil . "")) which-key-replacement-alist)
+ :hook ((after-init . xahfly-command-mode-enable)
+        (text-mode . xahfly-command-mode-enable)
+        (prog-mode . xahfly-command-mode-enable))
 
+ :config
   ;; Emacs has point between characters; stick with bar to reflect this
   ;; cursor for insert mode
   (setq-default cursor-type 'bar)
   (set-cursor-color "chartreuse3")
 
   ;; cursor for ryo modal mode
-  (setq ryo-modal-cursor-color "DarkGoldenrod2"
-        ryo-modal-cursor-type 'bar))
+  (setq xahfly-modal-cursor-color "DarkGoldenrod2"
+        xahfly-modal-cursor-type 'bar))
 
 ;; provide graphical tools to undo
 (use-package undo-tree
   :straight t
-  :ryo
-  (:norepeat t)
-  ("j" undo-tree-undo)
-  ("J" undo-tree-redo)
+  ;; :ryo
+  ;; (:norepeat t)
+  ;; ("j" undo-tree-undo)
+  ;; ("J" undo-tree-redo)
   :config
   (defconst user-undo-directory
     (file-name-as-directory (concat user-emacs-directory ".undo")))

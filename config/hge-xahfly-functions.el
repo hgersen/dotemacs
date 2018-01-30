@@ -19,9 +19,75 @@
 (when (version<= emacs-version "26.0.50"  )
   (defalias 'global-display-line-numbers-mode 'linum-mode ))
 
-;; cursor movement
+;; NOTE: handling of minor mode and cursor change derived from ryo-modal; MIT Licence
+
+;; handle binding of keys
+(defvar xahfly-command-key-map (make-sparse-keymap)
+  "General bindings in xahfly mode")
+
+(defvar xahfly-modal-cursor-type t
+  "Cursor type used in `xahfly-modal'. See description of `cursor-type'.")
+
+(defvar xahfly-modal-cursor-color "red"
+  "The cursor color used in `xahfly-modal'. If nil use default color.")
+
+(defvar xahfly-modal-default-cursor-color (face-attribute 'cursor :background)
+  "Default color of cursor.")
 
 ;;;###autoload
+(define-minor-mode xahfly-modal-mode
+  "Toggle `xahfly-mode'."
+  nil " xahfly" xahfly-command-key-map
+  (if xahfly-modal-mode
+      (progn
+        (when xahfly-modal-cursor-color
+          (add-hook 'post-command-hook #'xahfly-modal--cursor-color-update))
+        (setq-local cursor-type xahfly-modal-cursor-type)
+        (let ((map (eval (intern-soft (concat "xahfly-" (symbol-name major-mode) "-map")))))
+          (when map
+            (make-local-variable 'minor-mode-overriding-map-alist)
+            (push '(xahfly-modal-mode . ,map) minor-mode-overriding-map-alist))))
+    (remove-hook 'post-command-hook #'xahfly-modal--cursor-color-update)
+    (setq minor-mode-overriding-map-alist
+          (assq-delete-all 'xahfly-modal-mode minor-mode-overriding-map-alist))
+    (set-cursor-color xahfly-modal-default-cursor-color)
+    (setq-local cursor-type (default-value 'cursor-type))))
+
+(defun xahfly-modal--cursor-color-update ()
+  "Set cursor color depending on whether `xah-fly-modal' is active or not."
+  (if xahfly-modal-mode
+      (set-cursor-color xahfly-modal-cursor-color)
+    (set-cursor-color xahfly-modal-default-cursor-color)))
+;; here code sourced from ryo-modal ends
+
+(defun xahfly-command-mode-enable ()
+  "Explicitly enable xahfly-modal mode"
+  (interactive)
+  (xahfly-modal-mode 1))
+
+(defun xahfly-command-mode-disable ()
+  "Explicitly disable xahfly-modal mode"
+  (interactive)
+  (xahfly-modal-mode -1))
+
+(defun xahfly-define-keys (@keymap-name @key-cmd-alist)
+  "Map `define-key' over an alist @key-cmd-alist.
+Example usage:
+;; (xah-fly--define-keys
+;;  (define-prefix-command 'xah-fly-dot-keymap)
+;;  '(
+;;    (\"h\" . highlight-symbol-at-point)
+;;    (\".\" . isearch-forward-symbol-at-point)
+;;    (\"1\" . hi-lock-find-patterns)
+;;    (\"w\" . isearch-forward-word)))"
+  (interactive)
+  (mapc
+   (lambda ($pair)
+     (define-key @keymap-name (kbd (car $pair)) (cdr $pair)))
+   @key-cmd-alist))
+
+;; cursor movement
+
 (defun xah-pop-local-mark-ring ()
   "Move cursor to last mark position of current buffer.
 Call this repeatedly will cycle all positions in `mark-ring'.
@@ -30,7 +96,6 @@ version 2016-04-04"
   (interactive)
   (set-mark-command t))
 
-;;;###autoload
 (defun xah-beginning-of-line-or-block ()
   "Move cursor to beginning of line or previous paragraph.
 
@@ -54,7 +119,6 @@ Version 2017-06-26"
         (when (eq $p (point))
           (beginning-of-line))))))
 
-;;;###autoload
 (defun xah-end-of-line-or-block ()
   "Move cursor to end of line or next paragraph.
 
@@ -106,7 +170,6 @@ Version 2017-06-26"
   (interactive "p")
   (re-search-forward xah-punctuation-regex nil t n))
 
-;;;###autoload
 (defun xah-backward-punct (&optional n)
   "Move cursor to the previous occurrence of punctuation.
 See `xah-forward-punct'
@@ -116,7 +179,6 @@ Version 2017-06-26"
   (interactive "p")
   (re-search-backward xah-punctuation-regex nil t n))
 
-;;;###autoload
 (defun xah-backward-left-bracket ()
   "Move cursor to the previous occurrence of left bracket.
 The list of brackets to jump to is defined by `xah-left-brackets'.
@@ -125,7 +187,6 @@ Version 2015-10-01"
   (interactive)
   (re-search-backward (regexp-opt xah-left-brackets) nil t))
 
-;;;###autoload
 (defun xah-forward-right-bracket ()
   "Move cursor to the next occurrence of right bracket.
 The list of brackets to jump to is defined by `xah-right-brackets'.
@@ -134,7 +195,6 @@ Version 2015-10-01"
   (interactive)
   (re-search-forward (regexp-opt xah-right-brackets) nil t))
 
-;;;###autoload
 (defun xah-goto-matching-bracket ()
   "Move cursor to the matching bracket.
 If cursor is not on a bracket, call `backward-up-list'.
@@ -153,7 +213,6 @@ Version 2016-11-22"
       (backward-sexp))
      (t (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)))))
 
-;;;###autoload
 (defun xah-forward-equal-quote ()
   "Move cursor to the next occurrence of 「='」 or 「=\"」, with or without space.
 URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
@@ -161,7 +220,6 @@ Version 2015-05-05"
   (interactive)
   (re-search-forward "=[ \n]*\\('+\\|\\\"+\\)" nil t))
 
-;;;###autoload
 (defun xah-forward-equal-sign ()
   "Move cursor to the next occurrence of equal sign 「=」.
 URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
@@ -169,7 +227,6 @@ Version 2015-06-15"
   (interactive)
   (re-search-forward "=+" nil t))
 
-;;;###autoload
 (defun xah-backward-equal-sign ()
   "Move cursor to previous occurrence of equal sign 「=」.
 URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
@@ -179,14 +236,12 @@ Version 2015-06-15"
     (while (search-backward "=" (- (point) 1) t)
       (left-char))))
 
-;;;###autoload
 (defun xah-forward-comma-sign ()
   "Move cursor to the next occurrence of comma 「,」.
 Version 2016-01-19"
   (interactive)
   (re-search-forward ",+" nil t))
 
-;;;###autoload
 (defun xah-backward-comma-sign ()
   "Move cursor to previous occurrence of comma sign 「,」.
 Version 2016-01-19"
@@ -195,7 +250,6 @@ Version 2016-01-19"
     (while (search-backward "," (- (point) 1) t)
       (left-char))))
 
-;;;###autoload
 (defun xah-forward-quote ()
   "Move cursor to the next occurrence of \".
 If there are consecutive quotes of the same char, keep moving until none.
@@ -209,7 +263,6 @@ Version 2016-07-23"
       (message "No more quotes after cursor..")
       nil)))
 
-;;;###autoload
 (defun xah-forward-quote-twice ()
   "Call `xah-forward-quote' twice.
 Returns `t' if found, else `nil'.
@@ -219,7 +272,6 @@ Version 2016-07-23"
   (when (xah-forward-quote)
     (xah-forward-quote)))
 
-;;;###autoload
 (defun xah-forward-quote-smart ()
   "Move cursor to the current or next string quote.
 Place cursor at the position after the left quote.
@@ -237,7 +289,6 @@ Version 2016-11-22"
     (when (<= (point) $pos)
       (progn (re-search-forward "\\\"" nil t)))))
 
-;;;###autoload
 (defun xah-backward-quote ()
   "Move cursor to the previous occurrence of \".
 If there are consecutive quotes of the same char, keep moving until none.
@@ -254,7 +305,6 @@ Version 2016-07-23"
       (message "No more quotes before cursor.")
       nil)))
 
-;;;###autoload
 (defun xah-forward-dot-comma ()
   "Move cursor to the next occurrence of 「.」 「,」 「;」.
 URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
@@ -262,7 +312,6 @@ Version 2015-03-24"
   (interactive)
   (re-search-forward "\\.+\\|,+\\|;+" nil t))
 
-;;;###autoload
 (defun xah-backward-dot-comma ()
   "Move cursor to the previous occurrence of 「.」 「,」 「;」
 URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
@@ -272,7 +321,6 @@ Version 2015-03-24"
 
 ;; editing commands
 
-;;;###autoload
 (defun xah-copy-line-or-region ()
   "Copy current line, or text selection.
 When called repeatedly, append copy subsequent lines.
@@ -309,7 +357,6 @@ Version 2017-12-04"
             (end-of-line)
             (forward-char)))))))
 
-;;;###autoload
 (defun xah-cut-line-or-region ()
   "Cut current line, or text selection.
 When `universal-argument' is called first, cut whole buffer (respects `narrow-to-region').
@@ -325,7 +372,6 @@ Version 2015-06-10"
                (kill-region (region-beginning) (region-end) t)
              (kill-region (line-beginning-position) (line-beginning-position 2))))))
 
-;;;###autoload
 (defun xah-copy-all-or-region ()
   "Put the whole buffer content to `kill-ring', or text selection if there's one.
 Respects `narrow-to-region'.
@@ -340,7 +386,6 @@ Version 2015-08-22"
       (kill-new (buffer-string))
       (message "Buffer content copied."))))
 
-;;;###autoload
 (defun xah-cut-all-or-region ()
   "Cut the whole buffer content to `kill-ring', or text selection if there's one.
 Respects `narrow-to-region'.
@@ -355,7 +400,6 @@ Version 2015-08-22"
       (kill-new (buffer-string))
       (delete-region (point-min) (point-max)))))
 
-;;;###autoload
 (defun xah-copy-all ()
   "Put the whole buffer content into the `kill-ring'.
 (respects `narrow-to-region')
@@ -364,7 +408,6 @@ Version 2016-10-06"
   (kill-new (buffer-string))
   (message "Buffer content copied."))
 
-;;;###autoload
 (defun xah-cut-all ()
   "Cut the whole buffer content into the `kill-ring'.
 Respects `narrow-to-region'.
@@ -373,7 +416,6 @@ Version 2017-01-03"
   (kill-new (buffer-string))
   (delete-region (point-min) (point-max)))
 
-;;;###autoload
 (defun xah-paste-or-paste-previous ()
   "Paste. When called repeatedly, paste previous.
 This command calls `yank', and if repeated, call `yank-pop'.
@@ -394,7 +436,6 @@ Version 2017-07-25"
           (yank-pop 1)
         (yank)))))
 
-;;;###autoload
 (defun xah-show-kill-ring ()
   "Insert all `kill-ring' content in a new buffer.
 
@@ -410,7 +451,6 @@ Version 2017-06-19"
         (insert x "\n--------------------------------------------------\n\n"))
       (goto-char (point-min)))))
 
-;;;###autoload
 (defun xah-delete-backward-char-or-bracket-text ()
   "Delete backward 1 character, but if it's a \"quote\" or bracket ()[]{}【】「」 etc, delete bracket and the inner text, push the deleted text to `kill-ring'.
 
@@ -446,7 +486,6 @@ Version 2017-07-02"
      (t
       (delete-char -1)))))
 
-;;;###autoload
 (defun xah-delete-backward-bracket-text ()
   "Delete the matching brackets/quotes to the left of cursor, including the inner text.
 
@@ -462,7 +501,6 @@ Version 2017-09-21"
     (mark-sexp)
     (kill-region (region-beginning) (region-end))))
 
-;;;###autoload
 (defun xah-delete-backward-bracket-pair ()
   "Delete the matching brackets/quotes to the left of cursor.
 
@@ -485,7 +523,6 @@ Version 2017-07-02"
     (push-mark (point) t)
     (goto-char (- $p0 2))))
 
-;;;###autoload
 (defun xah-delete-forward-bracket-pairs ( &optional @delete-inner-text-p)
   "Delete the matching brackets/quotes to the right of cursor.
 If @delete-inner-text-p is true, also delete the inner text.
@@ -541,7 +578,6 @@ Version 2017-04-19"
       (downcase-region $p1 $p2)
       (put this-command 'state 0)))))
 
-;;;###autoload
 (defun xah-toggle-previous-letter-case ()
   "Toggle the letter case of the letter to the left of cursor.
 URL `http://ergoemacs.org/emacs/modernization_upcase-word.html'
@@ -554,7 +590,6 @@ Version 2015-12-22"
      ((looking-at "[[:upper:]]") (downcase-region (point) (1+ (point)))))
     (right-char)))
 
-;;;###autoload
 (defun xah-shrink-whitespaces ()
   "Remove whitespaces around cursor to just one or none.
 Call this command again to shrink more. 3 calls will remove all whitespaces.
@@ -589,7 +624,6 @@ Version 2017-07-15"
             (when (equal (char-after) 10) (delete-char 1))))
       (progn (delete-blank-lines)))))
 
-;;;###autoload
 (defun xah-fill-or-unfill ()
   "Reformat current paragraph or region to `fill-column', like `fill-paragraph' or “unfill”.
 When there is a text selection, act on the selection, else, act on a text block separated by blank lines.
@@ -623,7 +657,6 @@ Version 2017-01-08"
         (fill-region $p1 $p2)))
     (put this-command 'compact-p (not $compact-p))))
 
-;;;###autoload
 (defun xah-unfill-paragraph ()
   "Replace newline chars in current paragraph by single spaces.
 This command does the inverse of `fill-paragraph'.
@@ -634,7 +667,6 @@ Version 2016-07-13"
   (let ((fill-column most-positive-fixnum))
     (fill-paragraph)))
 
-;;;###autoload
 (defun xah-unfill-region (@begin @end)
   "Replace newline chars in region by single spaces.
 This command does the inverse of `fill-region'.
@@ -645,7 +677,6 @@ Version 2016-07-13"
   (let ((fill-column most-positive-fixnum))
     (fill-region @begin @end)))
 
-;;;###autoload
 (defun xah-reformat-lines ( &optional @length)
   "Reformat current text block into 1 long line or multiple short lines.
 When there is a text selection, act on the selection, else, act on a text block separated by blank lines.
@@ -691,7 +722,6 @@ Version 2017-10-22"
           (xah-reformat-whitespaces-to-one-space $p1 $p2)))
       (put this-command 'is-longline-p (not is-longline-p)))))
 
-;;;###autoload
 (defun xah-reformat-whitespaces-to-one-space (@begin @end)
   "Replace whitespaces by one space.
 
@@ -714,7 +744,6 @@ Version 2017-01-11"
           (re-search-forward "  +" nil "move")
         (replace-match " ")))))
 
-;;;###autoload
 (defun xah-reformat-to-multi-lines ( &optional @begin @end @min-length)
   "Replace spaces by a newline at places so lines are not long.
 When there is a text selection, act on the selection, else, act on a text block separated by blank lines.
@@ -752,7 +781,6 @@ Version 2017-10-22"
           (when (> (- (point) (line-beginning-position)) $minlen)
             (replace-match "\n" )))))))
 
-;;;###autoload
 (defun xah-space-to-newline ()
   "Replace space sequence to a newline char.
 Works on current block or selection.
@@ -780,7 +808,6 @@ Version 2017-08-19"
         (while (re-search-forward " +" nil t)
           (replace-match "\n" ))))))
 
-;;;###autoload
 (defun xah-comment-dwim ()
   "Like `comment-dwim', but toggle comment if cursor is not at end of line.
 
@@ -801,7 +828,6 @@ Version 2016-10-25"
             (comment-or-uncomment-region $lbp $lep)
             (forward-line )))))))
 
-;;;###autoload
 (defun xah-quote-lines ()
   "Change current text block's lines to quoted lines with comma or other separator char.
 When there is a text selection, act on the selection, else, act on a text block separated by blank lines.
@@ -886,7 +912,6 @@ Version 2017-01-11"
         ;;
         ))))
 
-;;;###autoload
 (defun xah-escape-quotes (@begin @end)
   "Replace 「\"」 by 「\\\"」 in current line or text selection.
 See also: `xah-unescape-quotes'
@@ -921,7 +946,6 @@ Version 2017-01-11"
       (while (search-forward "\\\"" nil t)
         (replace-match "\"" "FIXEDCASE" "LITERAL")))))
 
-;;;###autoload
 (defun xah-dired-rename-space-to-underscore ()
   "In dired, rename current or marked files by replacing space to lowline _.
 If not in `dired', do nothing.
@@ -938,7 +962,6 @@ Version 2017-12-13"
         (revert-buffer))
     (user-error "Not in dired")))
 
-;;;###autoload
 (defun xah-dired-rename-space-to-hyphen ()
   "In dired, rename current or marked files by replacing space to hyphen -.
 If not in `dired', do nothing.
@@ -955,7 +978,6 @@ Version 2016-12-22"
         (revert-buffer))
     (user-error "Not in dired")))
 
-;;;###autoload
 (defun xah-cycle-hyphen-underscore-space ( &optional @begin @end )
   "Cycle {underscore, space, hyphen} chars in selection or inside quote/bracket or line.
 When called repeatedly, this command cycles the {“_”, “-”, “ ”} characters, in that order.
@@ -1015,7 +1037,6 @@ Version 2017-01-27"
         (setq deactivate-mark nil))
       (put 'xah-cycle-hyphen-underscore-space 'state (% (+ $nowState 1) $length)))))
 
-;;;###autoload
 (defun xah-underscore-to-space-region (@begin @end)
   "Change underscore char to space.
 URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
@@ -1029,7 +1050,6 @@ Version 2017-01-11"
           (re-search-forward "_" (point-max) "move")
         (replace-match " " "FIXEDCASE" "LITERAL")))))
 
-;;;###autoload
 (defun xah-copy-file-path (&optional @dir-path-only-p)
   "Copy the current buffer's file path or dired path to `kill-ring'.
 Result is full path.
@@ -1061,7 +1081,6 @@ Version 2017-09-01"
          (message "File path copied: 「%s」" $fpath)
          $fpath )))))
 
-;;;###autoload
 (defun xah-delete-current-text-block ()
   "Delete the current text block or selection, and copy to `kill-ring'.
 A “block” is text between blank lines.
@@ -1092,7 +1111,6 @@ Version 2015-12-08"
     (copy-to-register ?1 (point-min) (point-min))
     (message "Cleared register 1.")))
 
-;;;###autoload
 (defun xah-copy-to-register-1 ()
   "Copy current line or text selection to register 1.
 See also: `xah-paste-from-register-1', `copy-to-register'.
@@ -1109,7 +1127,6 @@ Version 2017-01-23"
     (copy-to-register ?1 $p1 $p2)
     (message "Copied to register 1: 「%s」." (buffer-substring-no-properties $p1 $p2))))
 
-;;;###autoload
 (defun xah-append-to-register-1 ()
   "Append current line or text selection to register 1.
 When no selection, append current line, with newline char.
@@ -1129,7 +1146,6 @@ Version 2015-12-08"
                       (append-to-register ?1 (point-min) (point-max)))
     (message "Appended to register 1: 「%s」." (buffer-substring-no-properties $p1 $p2))))
 
-;;;###autoload
 (defun xah-paste-from-register-1 ()
   "Paste text from register 1.
 See also: `xah-copy-to-register-1', `insert-register'.
@@ -1140,7 +1156,6 @@ Version 2015-12-08"
     (delete-region (region-beginning) (region-end)))
   (insert-register ?1 t))
 
-;;;###autoload
 (defun xah-copy-rectangle-to-kill-ring (@begin @end)
   "Copy region as column (rectangle region) to `kill-ring'
 See also: `kill-rectangle', `copy-to-register'.
@@ -1151,7 +1166,6 @@ version 2016-07-17"
   (require 'rect)
   (kill-new (mapconcat 'identity (extract-rectangle @begin @end) "\n")))
 
-;;;###autoload
 (defun xah-upcase-sentence ()
   "Upcase first letters of sentences of current text block or selection.
 
@@ -1204,7 +1218,6 @@ Version 2017-04-30"
 
           (goto-char (point-min)))))))
 
-;;;###autoload
 (defun xah-title-case-region-or-line (@begin @end)
   "Title case text between nearest brackets, or current line, or text selection.
 Capitalize first letter of each word, except words like {to, of, the, a, in, or, and, …}. If a word already contains cap letters such as HTTP, URL, they are left as is.
@@ -1266,7 +1279,6 @@ Version 2017-01-11"
 
 ;; insertion commands
 
-;;;###autoload
 (defun xah-insert-date ()
   "Insert current date and or time.
 Insert date in this format: yyyy-mm-dd.
@@ -1335,7 +1347,6 @@ version 2016-12-18"
       (t
        (format-time-string "%Y-%m-%d"))))))
 
-;;;###autoload
 (defun xah-insert-bracket-pair (@left-bracket @right-bracket &optional @wrap-method)
   "Insert brackets around selection, word, at point, and maybe move cursor in between.
 
@@ -1425,130 +1436,106 @@ Version 2017-01-17"
               (insert @left-bracket)
               (goto-char (+ $p2 (length @left-bracket))))))))))
 
-;;;###autoload
 (defun xah-insert-paren ()
   (interactive)
   (xah-insert-bracket-pair "(" ")") )
 
-;;;###autoload
 (defun xah-insert-square-bracket ()
   (interactive)
   (xah-insert-bracket-pair "[" "]") )
 
-;;;###autoload
 (defun xah-insert-brace ()
   (interactive)
   (xah-insert-bracket-pair "{" "}") )
 
-;;;###autoload
 (defun xah-insert-double-curly-quote“” ()
   (interactive)
   (xah-insert-bracket-pair "“" "”") )
 
-;;;###autoload
 (defun xah-insert-curly-single-quote‘’ ()
   (interactive)
   (xah-insert-bracket-pair "‘" "’") )
 
-;;;###autoload
 (defun xah-insert-single-angle-quote‹› ()
   (interactive)
   (xah-insert-bracket-pair "‹" "›") )
 
-;;;###autoload
 (defun xah-insert-double-angle-quote«» ()
   (interactive)
   (xah-insert-bracket-pair "«" "»") )
 
-;;;###autoload
 (defun xah-insert-ascii-double-quote ()
   (interactive)
   (xah-insert-bracket-pair "\"" "\"") )
 
-;;;###autoload
 (defun xah-insert-ascii-single-quote ()
   (interactive)
   (xah-insert-bracket-pair "'" "'") )
 
-;;;###autoload
 (defun xah-insert-emacs-quote ()
   (interactive)
   (xah-insert-bracket-pair "`" "'") )
 
-;;;###autoload
 (defun xah-insert-corner-bracket「」 ()
   (interactive)
   (xah-insert-bracket-pair "「" "」" ) )
 
-;;;###autoload
 (defun xah-insert-white-corner-bracket『』 ()
   (interactive)
   (xah-insert-bracket-pair "『" "』") )
 
-;;;###autoload
 (defun xah-insert-angle-bracket〈〉 ()
   (interactive)
   (xah-insert-bracket-pair "〈" "〉") )
 
-;;;###autoload
 (defun xah-insert-double-angle-bracket《》 ()
   (interactive)
   (xah-insert-bracket-pair "《" "》") )
 
-;;;###autoload
 (defun xah-insert-white-lenticular-bracket〖〗 ()
   (interactive)
   (xah-insert-bracket-pair "〖" "〗") )
 
-;;;###autoload
 (defun xah-insert-black-lenticular-bracket【】 ()
   (interactive)
   (xah-insert-bracket-pair "【" "】") )
 
-;;;###autoload
 (defun xah-insert-tortoise-shell-bracket〔〕 ()
   (interactive)
   (xah-insert-bracket-pair "〔" "〕" ) )
 
-;;;###autoload
 (defun xah-insert-hyphen ()
   "Insert a HYPHEN-MINUS character."
   (interactive)
   (insert "-"))
 
-;;;###autoload
 (defun xah-insert-low-line ()
   "Insert a LOW LINE character."
   (interactive)
   (insert "_"))
 
-;;;###autoload
 (defun xah-insert-string-assignment ()
   "Insert space before cursor"
   (interactive)
   (progn (insert "=\"\"")
          (left-char)))
 
-;;;###autoload
 (defun xah-insert-space-before ()
   "Insert space before cursor"
   (interactive)
   (insert " "))
 
-;;;###autoload
 (defun xah-insert-space-after ()
   "Insert space after cursor"
   (interactive)
   (insert " ")
   (left-char))
 
-;;;###autoload
 (defun xah-insert-form-feed ()
   "Insert a form feed char (codepoint 12)"
   (interactive)
   (insert "\n\n"))
 
-;;;###autoload
 (defun xah-insert-column-counter (@n)
   "Insert a sequence of numbers vertically.
 
@@ -1579,7 +1566,6 @@ This command is conveniently used together with `kill-rectangle' and `string-rec
       (forward-line) (beginning-of-line) (forward-char $colpos)
       (setq $i (1+ $i)))))
 
-;;;###autoload
 (defun xah-insert-alphabets-az (&optional @use-uppercase-p)
   "Insert letters a to z vertically.
 If `universal-argument' is called first, use CAPITAL letters.
@@ -1613,7 +1599,6 @@ Version 2015-11-06"
         ("👍" . "tu")
         ) )
 
-;;;###autoload
 (defun xah-insert-unicode ()
   "Insert a unicode"
   (interactive)
@@ -1624,7 +1609,6 @@ Version 2015-11-06"
 
 ;; text selection
 
-;;;###autoload
 (defun xah-select-current-block ()
   "Select the current block of text between blank lines.
 
@@ -1638,7 +1622,6 @@ Version 2017-07-02"
     (push-mark (point) t t)
     (re-search-forward "\n[ \t]*\n" nil "move")))
 
-;;;###autoload
 (defun xah-select-block ()
   "Select the current/next block of text between blank lines.
 If region is active, extend selection downward by block.
@@ -1655,7 +1638,6 @@ Version 2017-11-01"
       (push-mark (point) t t)
       (re-search-forward "\n[ \t]*\n" nil "move"))))
 
-;;;###autoload
 (defun xah-select-current-line ()
   "Select current line.
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
@@ -1664,7 +1646,6 @@ Version 2016-07-22"
   (end-of-line)
   (set-mark (line-beginning-position)))
 
-;;;###autoload
 (defun xah-select-line ()
   "Select current line. If region is active, extend selection downward by line.
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
@@ -1678,7 +1659,6 @@ Version 2017-11-01"
       (end-of-line)
       (set-mark (line-beginning-position)))))
 
-;;;###autoload
 (defun xah-extend-selection ()
   "Select the current word, bracket/quote expression, or expand selection.
 Subsequent calls expands the selection.
@@ -1783,7 +1763,6 @@ Version 2017-09-01"
        ;;
        ))))
 
-;;;###autoload
 (defun xah-select-text-in-quote ()
   "Select text between the nearest left and right delimiters.
 Delimiters here includes the following chars: \"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）
@@ -1810,7 +1789,6 @@ Version 2016-12-18"
 
 ;; misc
 
-;;;###autoload
 (defun xah-display-form-feed-as-line ()
   "Display the formfeed ^L char as line.
 Version 2016-10-11"
@@ -1823,7 +1801,6 @@ Version 2016-10-11"
           (vconcat (make-list 70 (make-glyph-code ?─ 'font-lock-comment-face))))
     (redraw-frame)))
 
-;;;###autoload
 (defun xah-user-buffer-q ()
   "Return t if current buffer is a user buffer, else nil.
 Typically, if buffer name starts with *, it's not considered a user buffer.
@@ -1837,7 +1814,6 @@ Version 2016-06-18"
    ((string-equal major-mode "eww-mode") nil)
    (t t)))
 
-;;;###autoload
 (defun xah-next-user-buffer ()
   "Switch to the next user buffer.
 “user buffer” is determined by `xah-user-buffer-q'.
@@ -1852,7 +1828,6 @@ Version 2016-06-19"
                  (setq i (1+ i)))
         (progn (setq i 100))))))
 
-;;;###autoload
 (defun xah-previous-user-buffer ()
   "Switch to the previous user buffer.
 “user buffer” is determined by `xah-user-buffer-q'.
@@ -1867,7 +1842,6 @@ Version 2016-06-19"
                  (setq i (1+ i)))
         (progn (setq i 100))))))
 
-;;;###autoload
 (defun xah-next-emacs-buffer ()
   "Switch to the next emacs buffer.
 “emacs buffer” here is buffer whose name starts with *.
@@ -1879,7 +1853,6 @@ Version 2016-06-19"
     (while (and (not (string-equal "*" (substring (buffer-name) 0 1))) (< i 20))
       (setq i (1+ i)) (next-buffer))))
 
-;;;###autoload
 (defun xah-previous-emacs-buffer ()
   "Switch to the previous emacs buffer.
 “emacs buffer” here is buffer whose name starts with *.
@@ -1891,7 +1864,6 @@ Version 2016-06-19"
     (while (and (not (string-equal "*" (substring (buffer-name) 0 1))) (< i 20))
       (setq i (1+ i)) (previous-buffer))))
 
-;;;###autoload
 (defun xah-new-empty-buffer ()
   "Create a new empty buffer.
 New buffer will be named “untitled” or “untitled<2>”, “untitled<3>”, etc.
@@ -1912,7 +1884,6 @@ Version 2017-11-01"
 
 (defvar xah-recently-closed-buffers-max 40 "The maximum length for `xah-recently-closed-buffers'.")
 
-;;;###autoload
 (defun xah-close-current-buffer ()
   "Close the current buffer.
 
@@ -1953,7 +1924,6 @@ Version 2017-05-15"
             (setq xah-recently-closed-buffers (butlast xah-recently-closed-buffers 1))))
         (kill-buffer (current-buffer))))))
 
-;;;###autoload
 (defun xah-open-last-closed ()
   "Open the last closed file.
 URL `http://ergoemacs.org/emacs/elisp_close_buffer_open_last_closed.html'
@@ -1963,7 +1933,6 @@ Version 2016-06-19"
       (find-file (cdr (pop xah-recently-closed-buffers)))
     (progn (message "No recently close buffer in this session."))))
 
-;;;###autoload
 (defun xah-open-recently-closed ()
   "Open recently closed file.
 Prompt for a choice.
@@ -1972,7 +1941,6 @@ Version 2016-06-19"
   (interactive)
   (find-file (ido-completing-read "open:" (mapcar (lambda (f) (cdr f)) xah-recently-closed-buffers))))
 
-;;;###autoload
 (defun xah-list-recently-closed ()
   "List recently closed file.
 URL `http://ergoemacs.org/emacs/elisp_close_buffer_open_last_closed.html'
@@ -1983,7 +1951,6 @@ Version 2016-06-19"
     (mapc (lambda ($f) (insert (cdr $f) "\n"))
           xah-recently-closed-buffers)))
 
-;;;###autoload
 (defun xah-open-file-fast ()
   "Prompt to open a file from bookmark `bookmark-bmenu-list'.
 This command is similar to `bookmark-jump', but use `ido-mode' interface, and ignore cursor position in bookmark.
@@ -1998,7 +1965,6 @@ Version 2017-04-26"
     (find-file (bookmark-get-filename $this-bookmark))
     ))
 
-;;;###autoload
 (defun xah-open-file-at-cursor ()
   "Open the file path under cursor.
 If there is text selection, uses the text selection for path.
@@ -2058,7 +2024,6 @@ Version 2017-09-01"
                 (when (y-or-n-p (format "file doesn't exist: 「%s」. Create?" $path))
                   (find-file $path ))))))))))
 
-;;;###autoload
 (defun xah-run-current-file ()
   "Execute the current file.
 For example, if the current buffer is x.py, then it'll call 「python x.py」 in a shell. Output is printed to message buffer.
@@ -2120,7 +2085,6 @@ Version 2017-10-27"
               (shell-command $cmd-str "*xah-run-current-file output*" ))
           (message "No recognized program file suffix for this file."))))))
 
-;;;###autoload
 (defun xah-clean-empty-lines ()
   "Replace repeated blank lines to just 1.
 Works on whole buffer or text selection, respects `narrow-to-region'.
@@ -2140,7 +2104,6 @@ Version 2017-09-22"
           (while (re-search-forward "\n\n\n+" nil "move")
             (replace-match "\n\n")))))))
 
-;;;###autoload
 (defun xah-clean-whitespace ()
   "Delete trailing whitespace, and replace repeated blank lines to just 1.
 Only space and tab is considered whitespace here.
@@ -2170,7 +2133,6 @@ Version 2017-09-22"
             (delete-char -1))))
       (message "white space cleaned"))))
 
-;;;###autoload
 (defun xah-make-backup ()
   "Make a backup copy of current file or dired marked files.
 If in dired, backup current file or marked files.
@@ -2199,7 +2161,6 @@ Version 2015-10-14"
             (message "marked files backed up"))
         (user-error "buffer not file nor dired")))))
 
-;;;###autoload
 (defun xah-make-backup-and-save ()
   "Backup of current file and save, or backup dired marked files.
 For detail, see `xah-make-backup'.
@@ -2215,7 +2176,6 @@ Version 2015-10-14"
     (progn
       (xah-make-backup))))
 
-;;;###autoload
 (defun xah-delete-current-file-make-backup (&optional @no-backup-p)
   "Delete current file, makes a backup~, closes the buffer.
 
@@ -2246,7 +2206,6 @@ Version 2016-07-20"
         (message "Backup created at 「%s」." (concat "xx" $backup-suffix))))
     (kill-buffer (current-buffer))))
 
-;;;###autoload
 (defun xah-delete-current-file-copy-to-kill-ring ()
   "Delete current buffer/file and close the buffer, push content to `kill-ring'.
 URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
@@ -2265,7 +2224,6 @@ Version 2016-09-03"
       (set-buffer-modified-p nil)
       (kill-buffer (current-buffer)))))
 
-;;;###autoload
 (defun xah-delete-current-file (&optional @no-backup-p)
   "Delete current buffer/file.
 If buffer is a file, makes a backup~, else, push file content to `kill-ring'.
@@ -2292,7 +2250,6 @@ Version 2017-08-27"
     (when (eq major-mode 'dired-mode)
       (revert-buffer))))
 
-;;;###autoload
 (defun xah-search-current-word ()
   "Call `isearch' on current word or text selection.
 “word” here is A to Z, a to z, and hyphen 「-」 and underline 「_」, independent of syntax table.
@@ -2316,7 +2273,6 @@ Version 2015-04-09"
     (isearch-mode t)
     (isearch-yank-string (buffer-substring-no-properties $p1 $p2))))
 
-;;;###autoload
 (defun xah-show-in-desktop ()
   "Show current file in desktop.
  (Mac Finder, Windows Explorer, Linux file manager)
@@ -2348,7 +2304,6 @@ Version 2017-12-23"
         (start-process "" nil openFileProgram $path))
       ))))
 
-;;;###autoload
 (defun xah-open-in-external-app ()
   "Open the current file or dired marked files in external app.
 The app is chosen from your OS's preference.
@@ -2380,7 +2335,6 @@ Version 2016-10-15"
          (lambda ($fpath) (let ((process-connection-type nil))
                             (start-process "" nil "xdg-open" $fpath))) $file-list))))))
 
-;;;###autoload
 (defun xah-open-in-terminal ()
   "Open the current dir in a new terminal window.
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
@@ -2397,7 +2351,6 @@ Version 2017-10-09"
       (start-process "" nil "x-terminal-emulator"
                      (concat "--working-directory=" default-directory))))))
 
-;;;###autoload
 (defun xah-next-window-or-frame ()
   "Switch to next window or frame.
 If current frame has only one window, switch to next frame.
@@ -2410,7 +2363,6 @@ Version 2017-01-27"
         (other-frame 1)
       (other-window 1))))
 
-;;;###autoload
 (defun xah-unsplit-window-or-next-frame ()
   "Unsplit window. If current frame has only one window, switch to next frame.
 Version 2017-01-29"
@@ -2419,32 +2371,28 @@ Version 2017-01-29"
       (other-frame 1)
     (delete-other-windows)))
 
-;;;###autoload
 (defun xah-describe-major-mode ()
   "Display inline doc for current `major-mode'."
   (interactive)
   (describe-function major-mode))
 
-;;;###autoload
 (defun xah-fly-save-buffer-if-file ()
   "Save current buffer if it is a file."
   (interactive)
   (when (buffer-file-name)
     (save-buffer)))
 
-;;;###autoload
 (defun xah-fly-insert-mode-activate-space-before ()
   "Insert a space, then activate insertion mode."
   (interactive)
   (insert " ")
-  (my/enable-ryo-modal-mode))
+  (xahfly-command-mode-disable))
 
-;;;###autoload
 (defun xah-fly-insert-mode-activate-space-after ()
   "Insert a space, then activate insertion mode."
   (interactive)
   (insert " ")
-  (my/enable-ryo-modal-mode)
+  (xahfly-command-mode-disable)
   (left-char))
 
 (provide 'hge-xahfly-functions)

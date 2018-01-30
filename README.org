@@ -9,11 +9,10 @@ keys than result when remapping the used Dvorak bindings in xah-fly-keys to Cole
 DH.
 
 * Core ideas
-This configuration currently uses the [[https://github.com/Kungsgeten/ryo-modal][ryo-modal]] package to set up a modal configuration in
+This configuration uses an adapted version of xah-fly-keys using a cleaner switching
+mechanism inspired by the [[https://github.com/Kungsgeten/ryo-modal][ryo-modal]] package to set up a modal configuration in
 the form of a minor mode. This allows me to create bindings that can be bound to sequence
-of characters of my own choosing. The same functionality can be achieved with xah-fly-keys
-directly but requires a bit of a rewrite of that package, which is probably worth doing
-seeing [[https://github.com/Kungsgeten/ryo-modal/issues/8][this bug]].
+of characters of my own choosing.
 
 To ensure that this configuration is reproducible between different machines packages are
 installed and managed using [[https://github.com/raxod502/straight.el][straight.el]], which integrates well with [[https://github.com/jwiegley/use-package][use-package]].
