@@ -1,9 +1,9 @@
 ;;  -*- coding: utf-8; lexical-binding: t; -*-
 
 ;; normal mode mappings
-(xahfly-define-keys
- xahfly-command-key-map
- '(("SPC" . xahfly-leader-key-map)
+(xfly-define-keys
+ xfly-command-key-map
+ '(("SPC" . xfly-leader-key-map)
    ;; numbers
    ("1" . pop-global-mark)
    ("2" . xah-pop-local-mark-ring)
@@ -24,7 +24,7 @@
    ("a" . execute-extended-command)
    ("r" . open-line)
    ("s" . xah-delete-backward-char-or-bracket-text)
-   ("t" . xahfly-command-mode-disable)
+   ("t" . xfly-command-mode-disable)
    ("g" . xah-delete-current-text-block)
    ("z" . xah-comment-dwim)
    ("x" . xah-cut-line-or-region)
@@ -53,36 +53,36 @@
    ("/" . xah-goto-matching-bracket)))
 
 ;; leader key; equivalent to xah-fly-leader-key-map
-(xahfly-define-keys
- (define-prefix-command 'xahfly-leader-key-map)
+(xfly-define-keys
+ (define-prefix-command 'xfly-leader-key-map)
  '(("3" . delete-window)
    ("4" . split-window-right)
    ("5" . balance-windows)
    ("9" . ispell-word)
    ("a" . mark-whole-buffer)
    ("c" . xah-search-current-word)
-   ("d" . xahfly-d-key-map)
-   ("e" . xahfly-e-key-map)
-   ("f" . xahfly-f-key-map)
-   ("h" . xahfly-h-key-map)
-   ("i" . xahfly-i-key-map)
-   ("o" . xahfly-o-key-map)
-   ("r" . xahfly-r-key-map)
-   ("s" . xahfly-s-key-map)
-   ("t" . xahfly-t-key-map)
+   ("d" . xfly-d-key-map)
+   ("e" . xfly-e-key-map)
+   ("f" . xfly-f-key-map)
+   ("h" . xfly-h-key-map)
+   ("i" . xfly-i-key-map)
+   ("o" . xfly-o-key-map)
+   ("r" . xfly-r-key-map)
+   ("s" . xfly-s-key-map)
+   ("t" . xfly-t-key-map)
    ("w" . save-buffer)
    ("b" . switch-to-buffer)
    ("x" . xah-cut-all-or-region)
    ("." . repeat)))
 
 ;; delete and dump (=paste)
-(xahfly-define-keys
- (define-prefix-command 'xahfly-d-key-map)
+(xfly-define-keys
+ (define-prefix-command 'xfly-d-key-map)
  '(("f" . delete-frame)))
 
 ;; evaluate and emacs; equivalent to xah-fly-w-keymap
-(xahfly-define-keys
- (define-prefix-command 'xahfly-e-key-map)
+(xfly-define-keys
+ (define-prefix-command 'xfly-e-key-map)
  '(("a" . eval-buffer)
    ("d" . eval-defun)
    ("s" . eval-last-sexp)
@@ -94,8 +94,8 @@
    ("f" . xah-run-current-file)))
 
 ;; find and files; equivalent to xah-fly-c-keymap
-(xahfly-define-keys
- (define-prefix-command 'xahfly-f-key-map)
+(xfly-define-keys
+ (define-prefix-command 'xfly-f-key-map)
  '(("e" . xah-open-in-external-app)
    ("f" . find-file)
    ("b" . bookmark-bmenu-list)
@@ -111,8 +111,8 @@
    ("w" . write-file)))
 
 ;; help mode; equivalent to xah-fly-h-keymap
-(xahfly-define-keys
- (define-prefix-command 'xahfly-h-key-map)
+(xfly-define-keys
+ (define-prefix-command 'xfly-h-key-map)
  '(("z" . Info-goto-emacs-command-node)
    ("a" . apropos-command)
    ("b" . describe-bindings)
@@ -137,8 +137,8 @@
    ("/" . describe-coding-system)))
 
 ;; indent and completions
-(xahfly-define-keys
- (define-prefix-command 'xahfly-i-key-map)
+(xfly-define-keys
+ (define-prefix-command 'xfly-i-key-map)
  '(("i" . indent-for-tab-command)
    ("c" . complete-symbol)
    ("t" . indent-rigidly)
@@ -158,13 +158,13 @@
    ("=" . expand-jump-to-previous-slot)))
 
 ;; marks; equivalent to xah-fly-comma-keymap
-(xahfly-define-keys
- (define-prefix-command 'xahfly-m-key-map)
+(xfly-define-keys
+ (define-prefix-command 'xfly-m-key-map)
  '(("m" . xref-pop-marker-stack)))
 
 ;; options and open; equivalent to xah-fly-n-keymap
-(xahfly-define-keys
- (define-prefix-command 'xahfly-o-key-map)
+(xfly-define-keys
+ (define-prefix-command 'xfly-o-key-map)
  '(("SPC" . whitespace-mode)
    ("a" . abbrev-mode)
    ("," . toggle-frame-fullscreen)
@@ -187,8 +187,8 @@
    ("/" . abort-recursive-edit)))
 
 ;; rectangle; equivalent to xah-fly-r-keymap
-(xahfly-define-keys
- (define-prefix-command 'xahfly-r-key-map)
+(xfly-define-keys
+ (define-prefix-command 'xfly-r-key-map)
  '(("SPC" . rectangle-mark-mode)
    ("a" . apply-macro-to-region-lines)
    ("s" . kmacro-start-macro)
@@ -209,8 +209,8 @@
    ("x" . delete-whitespace-rectangle)))
 
 ;; surround objects; based on xah-fly-e-map
-(xahfly-define-keys
- (define-prefix-command 'xahfly-s-key-map)
+(xfly-define-keys
+ (define-prefix-command 'xfly-s-key-map)
  '(("RET" . insert-char)
    ("e" . xah-insert-emacs-quote)
    ("w" . xah-insert-brace)
@@ -218,8 +218,8 @@
    ("t" . xah-insert-square-bracket)))
 
 ;; to; equivalent to xah-fly-t-keymap
-(xahfly-define-keys
- (define-prefix-command 'xahfly-t-key-map)
+(xfly-define-keys
+ (define-prefix-command 'xfly-t-key-map)
  '(("SPC" . xah-clean-whitespace)
    ("TAB" . move-to-column)
    ("1" . xah-clear-register-1)
@@ -230,4 +230,4 @@
    ("l" . goto-line)
    ("w" . xah-next-window-or-frame)))
 
-(provide 'hge-xahfly-bindings)
+(provide 'hge-xfly-bindings)

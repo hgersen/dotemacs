@@ -17,15 +17,15 @@
   (setq which-key-idle-delay 0.4))
 
 ;; roll my own modal mode
-(use-package xahfly
+(use-package xfly
   :ensure nil
   :delight
   ;; the *version takes precedence over other minor mode keybindings
-  :bind* ("<escape>" . xahfly-command-mode-enable)
+  :bind* ("<escape>" . xfly-command-mode-enable)
   ;; repeat needs to be bound to keymap
- :hook ((after-init . xahfly-command-mode-enable)
-        (text-mode . xahfly-command-mode-enable)
-        (prog-mode . xahfly-command-mode-enable))
+ :hook ((after-init . xfly-command-mode-enable)
+        (text-mode . xfly-command-mode-enable)
+        (prog-mode . xfly-command-mode-enable))
 
  :config
   ;; Emacs has point between characters; stick with bar to reflect this
@@ -34,8 +34,8 @@
   (set-cursor-color "chartreuse3")
 
   ;; cursor for ryo modal mode
-  (setq xahfly-modal-cursor-color "DarkGoldenrod2"
-        xahfly-modal-cursor-type 'bar))
+  (setq xfly-modal-cursor-color "DarkGoldenrod2"
+        xfly-modal-cursor-type 'bar))
 
 ;; provide graphical tools to undo
 (use-package undo-tree

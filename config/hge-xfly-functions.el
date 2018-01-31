@@ -22,59 +22,59 @@
 ;; NOTE: handling of minor mode and cursor change derived from ryo-modal; MIT Licence
 
 ;; handle binding of keys
-(defvar xahfly-command-key-map (make-sparse-keymap)
-  "General bindings in xahfly mode")
+(defvar xfly-command-key-map (make-sparse-keymap)
+  "General bindings in xfly mode")
 
-(defvar xahfly-modal-cursor-type t
-  "Cursor type used in `xahfly-modal'. See description of `cursor-type'.")
+(defvar xfly-modal-cursor-type t
+  "Cursor type used in `xfly-modal'. See description of `cursor-type'.")
 
-(defvar xahfly-modal-cursor-color "red"
-  "The cursor color used in `xahfly-modal'. If nil use default color.")
+(defvar xfly-modal-cursor-color "red"
+  "The cursor color used in `xfly-modal'. If nil use default color.")
 
-(defvar xahfly-modal-default-cursor-color (face-attribute 'cursor :background)
+(defvar xfly-modal-default-cursor-color (face-attribute 'cursor :background)
   "Default color of cursor.")
 
 ;;;###autoload
-(define-minor-mode xahfly-modal-mode
-  "Toggle `xahfly-mode'."
-  nil " xahfly" xahfly-command-key-map
-  (if xahfly-modal-mode
+(define-minor-mode xfly-modal-mode
+  "Toggle `xfly-mode'."
+  nil " xfly" xfly-command-key-map
+  (if xfly-modal-mode
       (progn
-        (when xahfly-modal-cursor-color
-          (add-hook 'post-command-hook #'xahfly-modal--cursor-color-update))
-        (setq-local cursor-type xahfly-modal-cursor-type)
-        (let ((map (eval (intern-soft (concat "xahfly-" (symbol-name major-mode) "-map")))))
+        (when xfly-modal-cursor-color
+          (add-hook 'post-command-hook #'xfly-modal--cursor-color-update))
+        (setq-local cursor-type xfly-modal-cursor-type)
+        (let ((map (eval (intern-soft (concat "xfly-" (symbol-name major-mode) "-map")))))
           (when map
             (make-local-variable 'minor-mode-overriding-map-alist)
-            (push '(xahfly-modal-mode . ,map) minor-mode-overriding-map-alist))))
-    (remove-hook 'post-command-hook #'xahfly-modal--cursor-color-update)
+            (push '(xfly-modal-mode . ,map) minor-mode-overriding-map-alist))))
+    (remove-hook 'post-command-hook #'xfly-modal--cursor-color-update)
     (setq minor-mode-overriding-map-alist
-          (assq-delete-all 'xahfly-modal-mode minor-mode-overriding-map-alist))
-    (set-cursor-color xahfly-modal-default-cursor-color)
+          (assq-delete-all 'xfly-modal-mode minor-mode-overriding-map-alist))
+    (set-cursor-color xfly-modal-default-cursor-color)
     (setq-local cursor-type (default-value 'cursor-type))))
 
-(defun xahfly-modal--cursor-color-update ()
-  "Set cursor color depending on whether `xah-fly-modal' is active or not."
-  (if xahfly-modal-mode
-      (set-cursor-color xahfly-modal-cursor-color)
-    (set-cursor-color xahfly-modal-default-cursor-color)))
+(defun xfly-modal--cursor-color-update ()
+  "Set cursor color depending on whether `xfly-modal' is active or not."
+  (if xfly-modal-mode
+      (set-cursor-color xfly-modal-cursor-color)
+    (set-cursor-color xfly-modal-default-cursor-color)))
 ;; here code sourced from ryo-modal ends
 
-(defun xahfly-command-mode-enable ()
-  "Explicitly enable xahfly-modal mode"
+(defun xfly-command-mode-enable ()
+  "Explicitly enable xfly-modal mode"
   (interactive)
-  (xahfly-modal-mode 1))
+  (xfly-modal-mode 1))
 
-(defun xahfly-command-mode-disable ()
-  "Explicitly disable xahfly-modal mode"
+(defun xfly-command-mode-disable ()
+  "Explicitly disable xfly-modal mode"
   (interactive)
-  (xahfly-modal-mode -1))
+  (xfly-modal-mode -1))
 
-(defun xahfly-define-keys (@keymap-name @key-cmd-alist)
+(defun xfly-define-keys (@keymap-name @key-cmd-alist)
   "Map `define-key' over an alist @key-cmd-alist.
 Example usage:
-;; (xah-fly--define-keys
-;;  (define-prefix-command 'xah-fly-dot-keymap)
+;; (xfly-define-keys
+;;  (define-prefix-command 'xfly-dot-keymap)
 ;;  '(
 ;;    (\"h\" . highlight-symbol-at-point)
 ;;    (\".\" . isearch-forward-symbol-at-point)
@@ -2386,13 +2386,13 @@ Version 2017-01-29"
   "Insert a space, then activate insertion mode."
   (interactive)
   (insert " ")
-  (xahfly-command-mode-disable))
+  (xfly-command-mode-disable))
 
 (defun xah-fly-insert-mode-activate-space-after ()
   "Insert a space, then activate insertion mode."
   (interactive)
   (insert " ")
-  (xahfly-command-mode-disable)
+  (xfly-command-mode-disable)
   (left-char))
 
-(provide 'hge-xahfly-functions)
+(provide 'hge-xfly-functions)
