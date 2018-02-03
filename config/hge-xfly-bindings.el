@@ -46,7 +46,7 @@
    ("i" . forward-char)
    ("o" . xah-end-of-line-or-block)
    ("-" . xah-cycle-hyphen-underscore-space)
-   ("m" . isearch-forward)
+   ("m" . swiper)
    ("h" . xah-backward-left-bracket)
    ("," . xah-next-window-or-frame)
    ("." . xah-forward-right-bracket)
@@ -90,6 +90,7 @@
    ("e" . next-error)
    ("u" . previous-error)
    ("r" . eval-region)
+   ("R" . restart-emacs)
    ("q" . save-buffers-kill-terminal)
    ("f" . xah-run-current-file)))
 

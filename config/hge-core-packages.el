@@ -66,6 +66,54 @@
                           "/Maildir/"))
   (recentf-mode 1))
 
+;; make restarting emacs a bit easier
+(use-package restart-emacs
+  :straight t)
+
+;; smex is used to get frequent commands at the top
+(use-package smex
+  :straight t
+  :config
+  (setq smex-save-file (concat user-cache-directory "smex-items"))
+  (smex-initialize))
+
+;; replaces isearch
+(use-package swiper
+  :straight t)
+
+;; generic completion front-end
+(use-package ivy
+  :straight t
+  :delight
+  :config
+  (setq ivy-use-virtual-buffers t
+        ivy-wrap t
+        ivy-display-style 'fancy
+        ivy-count-format "(%d/%d ")
+  (ivy-mode t))
+
+;; provide completion functions that use ivy
+(use-package counsel
+  :straight t
+  :delight
+  :config
+  (counsel-mode t))
+
+;; use projectile to interact with projects
+(use-package projectile
+  :straight t
+  :delight
+  :config
+  (setq projectile-cache-file (expand-file-name "projectile.cache" user-cache-directory)
+        projectile-known-projects-file (concat user-cache-directory "projectile-bookmarks.eld")
+        projectile-completion-system 'ivy)
+  (projectile-global-mode))
+
+(use-package counsel-projectile
+  :straight t
+  :config
+  (counsel-projectile-mode))
+
 ;; folding
 (use-package vimish-fold
   :disabled t
