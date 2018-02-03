@@ -51,16 +51,32 @@
 (use-package telephone-line
   :straight t
   :config
+  (setq telephone-line-evil-use-short-tag t)
+  (telephone-line-defsegment* telephone-line-xfly-modal-segment ()
+     (let ((tag (if xfly-modal-mode
+                    "COMMAND" "EMACS")))
+       (if telephone-line-evil-use-short-tag
+           (seq-take tag 1)
+         tag)))
+
+  (defun telephone-line-xfly-modal-face (active)
+    "Return an appropriate face depending whether xfly-mode is activated."
+    (cond ((not active) 'mode-line-inactive)
+          ((not (boundp 'xfly-modal-mode)) 'mode-line)
+          ((not xfly-modal-mode) 'telephone-line-evil-insert)
+          (t 'telephone-line-evil-normal)))
+
+  (add-to-list 'telephone-line-faces '(xfly . telephone-line-xfly-modal-face))
   (setq telephone-line-lhs
-;        '((ryo . (telephone-line-ryo-modal-segment))
-          '((accent . (telephone-line-vc-segment
+        '((xfly . (telephone-line-xfly-modal-segment))
+          (accent . (telephone-line-vc-segment
                      telephone-line-process-segment))
           (nil . (telephone-line-minor-mode-segment
                   telephone-line-buffer-segment))))
   (setq telephone-line-rhs
         '((nil . (telephone-line-misc-info-segment))
-          (accent . (telephone-line-major-mode-segment)))) 
-;          (ryo . (telephone-line-airline-position-segment))))
+          (accent . (telephone-line-major-mode-segment))
+          (xfly . (telephone-line-airline-position-segment))))
   (telephone-line-mode t))
 
 (provide 'hge-gui-settings)

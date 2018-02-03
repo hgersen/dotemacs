@@ -40,6 +40,7 @@
 ;; provide graphical tools to undo
 (use-package undo-tree
   :straight t
+  :delight
   ;; :ryo
   ;; (:norepeat t)
   ;; ("j" undo-tree-undo)
