@@ -12,6 +12,8 @@
   :straight t
   :delight
   :config
+  ;; prevent showing xfly- in front of commands in popup
+  (push '((nil . "xfly-") . (nil . "")) which-key-replacement-alist)
   (which-key-mode)
   (setq which-key-idle-delay 0.4))
 
@@ -39,10 +41,6 @@
 (use-package undo-tree
   :straight t
   :delight
-  ;; :ryo
-  ;; (:norepeat t)
-  ;; ("j" undo-tree-undo)
-  ;; ("J" undo-tree-redo)
   :config
   (defconst user-undo-directory
     (file-name-as-directory (concat user-emacs-directory ".undo")))

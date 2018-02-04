@@ -61,7 +61,6 @@
   :ensure nil
   :after tidy-directories
   :init
-  ;:config
   (setq vc-make-backup-files t ; backup versioned files
         make-backup-files t ; backup a file the first time it is saved
         backup-by-copying t ; don't clobber symlinks

@@ -70,29 +70,6 @@
   (interactive)
   (xfly-modal-mode -1))
 
-(defun xfly-simulate-key-press (key)
-  "Pretend that KEY was pressed. KEY must be given in `kbd' notation."
-  `(lambda ()
-     (interactive)
-     (setq prefix-arg current-prefix-arg)
-     (setq unread-command-events (listify-key-sequence (read-kbd-macro ,key)))))
-
-(defun xfly-define-keys (@keymap-name @key-cmd-alist)
-  "Map `define-key' over an alist @key-cmd-alist.
-Example usage:
-;; (xfly-define-keys
-;;  (define-prefix-command 'xfly-dot-keymap)
-;;  '(
-;;    (\"h\" . highlight-symbol-at-point)
-;;    (\".\" . isearch-forward-symbol-at-point)
-;;    (\"1\" . hi-lock-find-patterns)
-;;    (\"w\" . isearch-forward-word)))"
-  (interactive)
-  (mapc
-   (lambda ($pair)
-     (define-key @keymap-name (kbd (car $pair)) (cdr $pair)))
-   @key-cmd-alist))
-
 ;; cursor movement
 
 (defun xah-pop-local-mark-ring ()
