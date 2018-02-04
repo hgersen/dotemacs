@@ -10,6 +10,7 @@
 ;; provide helpful hints
 (use-package which-key
   :straight t
+  :defer 2
   :delight
   :config
   ;; prevent showing xfly- in front of commands in popup
@@ -37,9 +38,16 @@
   (setq xfly-modal-cursor-color "DarkGoldenrod2"
         xfly-modal-cursor-type 'bar))
 
+;; offer functions to help in profiling startup
+(use-package esup
+  :commands esup
+  :straight t)
+
 ;; provide graphical tools to undo
 (use-package undo-tree
   :straight t
+  :commands (undo-tree-undo
+             undo-tree-redo)
   :delight
   :config
   (defconst user-undo-directory
@@ -54,6 +62,10 @@
 ;; keep track of previously opened files
 (use-package recentf
   :straight t
+  :defer 5
+  :commands (recentf-mode
+             recentf-add-file
+             recentf-apply-filename-handlers)
   :config
   (setq recentf-max-saved-items 1000
         recentf-auto-cleanup 300
@@ -64,22 +76,29 @@
 
 ;; make restarting emacs a bit easier
 (use-package restart-emacs
+  :commands restart-emacs
   :straight t)
 
 ;; smex is used to get frequent commands at the top
 (use-package smex
   :straight t
+  :defer 5
+  :commands smex
   :config
   (setq smex-save-file (concat user-cache-directory "smex-items"))
   (smex-initialize))
 
 ;; replaces isearch
 (use-package swiper
-  :straight t)
+  :straight t
+  :defer t
+  :commands swiper
+  :after ivy)
 
 ;; generic completion front-end
 (use-package ivy
   :straight t
+  :defer 2
   :delight
   :config
   (setq ivy-use-virtual-buffers t
@@ -91,6 +110,8 @@
 ;; provide completion functions that use ivy
 (use-package counsel
   :straight t
+  :after ivy
+  :demand t
   :delight
   :config
   (counsel-mode t))
@@ -98,6 +119,7 @@
 ;; use projectile to interact with projects
 (use-package projectile
   :straight t
+  :defer 5
   :delight
   :config
   (setq projectile-cache-file (expand-file-name "projectile.cache" user-cache-directory)
@@ -107,6 +129,8 @@
 
 (use-package counsel-projectile
   :straight t
+  :defer 5
+  :after (counsel projectile)
   :config
   (counsel-projectile-mode))
 

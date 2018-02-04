@@ -103,16 +103,19 @@
 
 ;; visual settings
 (use-package visual-settings
+  :defer t
   :ensure nil
   :init
-  (menu-bar-mode -1)
-  (scroll-bar-mode -1)
-  (tooltip-mode -1)
-  (tool-bar-mode -1)
-  ;; silence GNU startup messages
-  (setq inhibit-startup-message t)
   (provide 'visual-settings)
   :config
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+  ;; note: the two options below add 0.1s to startup each; i can live with tooltips.
+  ;; (tooltip-mode -1)
+  (tool-bar-mode -1)
+
+  ;; silence GNU startup messages
+  (setq inhibit-startup-message t)
   ;; visual aids for code-editing
   (setq show-paren-delay 0)
   (show-paren-mode t)
@@ -124,6 +127,7 @@
 
 ;; set default font
 (use-package font-settings
+  :defer t
   :ensure nil
   :init
   (provide 'font-settings)
