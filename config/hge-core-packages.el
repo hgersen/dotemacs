@@ -11,9 +11,8 @@
 (use-package which-key
   :straight t
   :delight
-  :init
-  (which-key-mode)
   :config
+  (which-key-mode)
   (setq which-key-idle-delay 0.4))
 
 ;; roll my own modal mode
@@ -23,11 +22,10 @@
   ;; the *version takes precedence over other minor mode keybindings
   :bind* ("<escape>" . xfly-command-mode-enable)
   ;; repeat needs to be bound to keymap
- :hook ((after-init . xfly-command-mode-enable)
-        (text-mode . xfly-command-mode-enable)
-        (prog-mode . xfly-command-mode-enable))
-
- :config
+  :hook ((after-init . xfly-command-mode-enable)
+         (text-mode . xfly-command-mode-enable)
+         (prog-mode . xfly-command-mode-enable))
+  :init
   ;; Emacs has point between characters; stick with bar to reflect this
   ;; cursor for insert mode
   (setq-default cursor-type 'bar)

@@ -1,5 +1,9 @@
 ;;  -*- coding: utf-8; lexical-binding: t; -*-
 
+;; simulated key-presses to make some emacs prefix maps easier to access
+(define-key xfly-command-key-map
+  (kbd ";") (xfly-simulate-key-press "C-c"))
+
 ;; normal mode mappings
 (xfly-define-keys
  xfly-command-key-map
@@ -38,7 +42,6 @@
    ("l" . backward-word)
    ("u" . previous-line)
    ("y" . forward-word)
-   (";" . xah-fly-insert-mode-activate-space-before)
    ;; missing char in keymap
    ("k" . xah-beginning-of-line-or-block)
    ("n" . backward-char)
@@ -102,7 +105,7 @@
    ("b" . bookmark-bmenu-list)
    ("i" . ibuffer)
    ("t" . xah-open-file-at-cursor)
-   ("r" . recentf-open-files)
+   ("r" . counsel-recentf)
    ("m" . bookmark-set)
    ("n" . xah-new-empty-buffer)
    ("d" . xah-show-in-desktop)
