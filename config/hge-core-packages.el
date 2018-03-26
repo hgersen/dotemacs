@@ -10,7 +10,7 @@
 ;; provide helpful hints
 (use-package which-key
   :straight t
-  :defer 2
+  :defer 5
   :delight
   :config
   ;; prevent showing xfly- in front of commands in popup
@@ -120,6 +120,7 @@
 (use-package projectile
   :straight t
   :defer 5
+  :commands projectile-global-mode
   :delight
   :config
   (setq projectile-cache-file (expand-file-name "projectile.cache" user-cache-directory)
@@ -130,6 +131,7 @@
 (use-package counsel-projectile
   :straight t
   :defer 5
+  :commands counsel-projectile-mode
   :after (counsel projectile)
   :config
   (counsel-projectile-mode))
