@@ -1,9 +1,14 @@
 ;;;  -*- coding: utf-8; lexical-binding: t; -*-
 
+;; used to provide spacemacs like transient states
+(use-package hydra
+  :straight t
+  :init
+  (setq hydra-if-helpful t))
+
 ;; provide helpful hints
 (use-package which-key
   :straight t
-  :defer 5
   :delight
   :config
   ;; prevent showing xfly- in front of commands in popup
@@ -55,7 +60,6 @@
 ;; keep track of previously opened files
 (use-package recentf
   :straight t
-  :defer 5
   :commands (recentf-mode
              recentf-add-file
              recentf-apply-filename-handlers)
@@ -75,7 +79,6 @@
 ;; smex is used to get frequent commands at the top
 (use-package smex
   :straight t
-  :defer 5
   :commands smex
   :config
   (setq smex-save-file (concat user-cache-directory "smex-items"))
@@ -84,14 +87,12 @@
 ;; replaces isearch
 (use-package swiper
   :straight t
-  :defer t
   :commands swiper
   :after ivy)
 
 ;; generic completion front-end
 (use-package ivy
   :straight t
-  :defer 2
   :delight
   :config
   (setq ivy-use-virtual-buffers t
@@ -112,7 +113,6 @@
 ;; use projectile to interact with projects
 (use-package projectile
   :straight t
-  :defer 5
   :commands projectile-global-mode
   :delight
   :config
@@ -123,7 +123,6 @@
 
 (use-package counsel-projectile
   :straight t
-  :defer 5
   :commands counsel-projectile-mode
   :after (counsel projectile)
   :config

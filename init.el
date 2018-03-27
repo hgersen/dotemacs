@@ -145,6 +145,7 @@
 (use-package hge-gui-settings :ensure nil)
 (use-package hge-xfly-functions :ensure nil)
 (use-package hge-xfly-bindings :ensure nil)
+(use-package hge-complete-and-check :ensure nil)
 
 ;; reduce garbage collection to happen often; threshold at 5MB
 (add-hook 'after-init-hook (lambda () (setq gc-cons-threshold (* 5 1024 1024))))

@@ -254,6 +254,9 @@
         :prefix-map xfly-surround-map
         ("RET" . insert-char)
         ("e" . xah-insert-emacs-quote)
+        ("c" . flyspell-correct-previous-word-generic)
+        ("n" . flyspell-goto-next-error)
+        ("b" . flyspell-buffer)
         ("w" . xah-insert-brace)
         ("s" . xah-insert-paren)
         ("t" . xah-insert-square-bracket)))
