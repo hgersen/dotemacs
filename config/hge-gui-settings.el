@@ -45,6 +45,7 @@
 ;; make matching parenthesis easier to spot
 (use-package rainbow-delimiters
   :straight t
+  :defer t
   :hook (prog-mode . rainbow-delimiters-mode))
 
 ;; configure mode-line

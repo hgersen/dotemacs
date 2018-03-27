@@ -34,7 +34,8 @@
   :straight t
   :init
   (setq company-idle-delay 0.2
-        company-minimum-prefix-length 2)
+        company-minimum-prefix-length 2
+        company-tooltip-align-annotations t)
   :config
   ;; work-around as :bind fails to work
   (bind-keys
