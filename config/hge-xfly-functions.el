@@ -83,8 +83,10 @@ version 2016-04-04"
 (defun xah-beginning-of-line-or-block ()
   "Move cursor to beginning of line or previous paragraph.
 
-• When called first time, move cursor to beginning of char in current line. (if already, move to beginning of line.)
-• When called again, move cursor backward by jumping over any sequence of whitespaces containing 2 blank lines.
+• When called first time, move cursor to beginning of char in current line.
+(if already, move to beginning of line.) • When called again, move cursor
+backward by jumping over any sequence of whitespaces containing 2 blank
+lines.
 
 URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
 Version 2017-06-26"
@@ -106,8 +108,9 @@ Version 2017-06-26"
 (defun xah-end-of-line-or-block ()
   "Move cursor to end of line or next paragraph.
 
-• When called first time, move cursor to end of line.
-• When called again, move cursor forward by jumping over any sequence of whitespaces containing 2 blank lines.
+• When called first time, move cursor to end of line. • When called again,
+move cursor forward by jumping over any sequence of whitespaces containing
+2 blank lines.
 
 URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
 Version 2017-05-30"
@@ -435,10 +438,25 @@ Version 2017-06-19"
         (insert x "\n--------------------------------------------------\n\n"))
       (goto-char (point-min)))))
 
-(defun xah-delete-backward-char-or-bracket-text ()
-  "Delete backward 1 character, but if it's a \"quote\" or bracket ()[]{}【】「」 etc, delete bracket and the inner text, push the deleted text to `kill-ring'.
+(defun xah-kill-word ()
+  "Like `kill-word', but delete selection first if there's one."
+  (interactive)
+  (when mark-active
+    (delete-region (region-beginning) (region-end)))
+  (kill-word 1))
 
-What char is considered bracket or quote is determined by current syntax table.
+(defun xah-backward-kill-word ()
+  "Like `backward-kill-word', but delete selection first if there's one."
+  (interactive)
+  (when mark-active
+    (delete-region (region-beginning) (region-end)))
+  (backward-kill-word 1))
+
+(defun xah-delete-backward-char-or-bracket-text ()
+ "Delete backward 1 character, but if it's a \"quote\" or bracket ()[]{}【】「」
+etc, delete bracket and the inner text, push the deleted text to `kill-ring'.
+What char is considered bracket or quote is determined by current syntax
+table.
 
 If `universal-argument' is called first, do not delete inner text.
 
@@ -488,9 +506,11 @@ Version 2017-09-21"
 (defun xah-delete-backward-bracket-pair ()
   "Delete the matching brackets/quotes to the left of cursor.
 
-After the command, mark is set at the left matching bracket position, so you can `exchange-point-and-mark' to select it.
+After the command, mark is set at the left matching bracket position, so
+you can `exchange-point-and-mark' to select it.
 
-This command assumes the left of point is a right bracket, and there's a matching one before it.
+This command assumes the left of point is a right bracket, and there's
+a matching one before it.
 
 What char is considered bracket or quote is determined by current syntax table.
 
@@ -511,11 +531,13 @@ Version 2017-07-02"
   "Delete the matching brackets/quotes to the right of cursor.
 If @delete-inner-text-p is true, also delete the inner text.
 
-After the command, mark is set at the left matching bracket position, so you can `exchange-point-and-mark' to select it.
+ After the command, mark is set at the left matching bracket position,
+so you can `exchange-point-and-mark' to select it. This command assumes
+the char to the right of point is a left bracket or quote, and have a matching
+one after.
 
-This command assumes the char to the right of point is a left bracket or quote, and have a matching one after.
-
-What char is considered bracket or quote is determined by current syntax table.
+What char is considered bracket or quote is determined by current syntax
+table.
 
 URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
 Version 2017-07-02"
@@ -609,12 +631,16 @@ Version 2017-07-15"
       (progn (delete-blank-lines)))))
 
 (defun xah-fill-or-unfill ()
-  "Reformat current paragraph or region to `fill-column', like `fill-paragraph' or “unfill”.
-When there is a text selection, act on the selection, else, act on a text block separated by blank lines.
+ "Reformat current paragraph or region to `fill-column', like `fill-paragraph'
+or “unfill”. When there is a text selection, act on the selection, else,
+act on a text block separated by blank lines.
+
 URL `http://ergoemacs.org/emacs/modernization_fill-paragraph.html'
 Version 2017-01-08"
   (interactive)
-  ;; This command symbol has a property “'compact-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
+  ;; This command symbol has a property “'compact-p”, the possible values
+are t and nil. This property is used to easily determine whether to compact
+or uncompact, when this command is called again
   (let ( ($compact-p
           (if (eq last-command this-command)
               (get this-command 'compact-p)
@@ -662,23 +688,30 @@ Version 2016-07-13"
     (fill-region @begin @end)))
 
 (defun xah-reformat-lines ( &optional @length)
-  "Reformat current text block into 1 long line or multiple short lines.
-When there is a text selection, act on the selection, else, act on a text block separated by blank lines.
+ "Reformat current text block into 1 long line or multiple short lines.
+When there is a text selection, act on the selection, else, act on a text
+block separated by blank lines.
 
-When the command is called for the first time, it checks the current line's length to decide to go into 1 line or multiple lines. If current line is short, it'll reformat to 1 long lines. And vice versa.
+When the command is called for the first time, it checks the current line's
+length to decide to go into 1 line or multiple lines. If current line is
+short, it'll reformat to 1 long lines. And vice versa.
 
 Repeated call toggles between formatting to 1 long line and multiple lines.
 
-If `universal-argument' is called first, use the number value for min length of line. By default, it's 70.
+If `universal-argument' is called first, use the number value for min length
+of line. By default, it's 70.
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
 Version 2017-10-22"
   (interactive)
-  ;; This command symbol has a property “'is-longline-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
+  ;; This command symbol has a property “'is-longline-p”, the possible
+values are t and nil. This property is used to easily determine whether
+to compact or uncompact, when this command is called again
   (let* (
          (@length (if @length
                       @length
-                    (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 70 )))
+                    (if current-prefix-arg (prefix-numeric-value current-prefix-arg)
+70 )))
          (is-longline-p
           (if (eq last-command this-command)
               (get this-command 'is-longline-p)
@@ -729,10 +762,12 @@ Version 2017-01-11"
         (replace-match " ")))))
 
 (defun xah-reformat-to-multi-lines ( &optional @begin @end @min-length)
-  "Replace spaces by a newline at places so lines are not long.
-When there is a text selection, act on the selection, else, act on a text block separated by blank lines.
+ "Replace spaces by a newline at places so lines are not long. When there
+is a text selection, act on the selection, else, act on a text block separated
+by blank lines.
 
-If `universal-argument' is called first, use the number value for min length of line. By default, it's 70.
+If `universal-argument' is called first, use the number value for min length
+of line. By default, it's 70.
 
 URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
 Version 2017-10-22"
@@ -742,7 +777,8 @@ Version 2017-10-22"
         ($blanks-regex "\n[ \t]*\n")
         ($minlen (if @min-length
                      @min-length
-                   (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 70 ))))
+                   (if current-prefix-arg (prefix-numeric-value current-prefix-arg)
+70 ))))
     (if (and  @begin @end)
         (setq $p1 @begin $p2 @end)
       (if (region-active-p)
@@ -813,8 +849,9 @@ Version 2016-10-25"
             (forward-line )))))))
 
 (defun xah-quote-lines ()
-  "Change current text block's lines to quoted lines with comma or other separator char.
-When there is a text selection, act on the selection, else, act on a text block separated by blank lines.
+ "Change current text block's lines to quoted lines with comma or other
+separator char. When there is a text selection, act on the selection, else,
+act on a text block separated by blank lines.
 
 For example,
 
@@ -1041,7 +1078,8 @@ If `universal-argument' is called first, copy only the dir path.
 
 If in dired, copy the file/dir cursor is on, or marked files.
 
-If a buffer is not file and not dired, copy value of `default-directory' (which is usually the “current” dir when that buffer was created)
+If a buffer is not file and not dired, copy value of `default-directory'
+(which is usually the “current” dir when that buffer was created)
 
 URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
 Version 2017-09-01"
@@ -1049,7 +1087,8 @@ Version 2017-09-01"
   (let (($fpath
          (if (string-equal major-mode 'dired-mode)
              (progn
-               (let (($result (mapconcat 'identity (dired-get-marked-files) "\n")))
+               (let (($result (mapconcat 'identity (dired-get-marked-files)
+"\n")))
                  (if (equal (length $result) 0)
                      (progn default-directory )
                    (progn $result))))
@@ -1059,7 +1098,8 @@ Version 2017-09-01"
     (kill-new
      (if @dir-path-only-p
          (progn
-           (message "Directory path copied: 「%s」" (file-name-directory $fpath))
+           (message "Directory path copied: 「%s」" (file-name-directory
+$fpath))
            (file-name-directory $fpath))
        (progn
          (message "File path copied: 「%s」" $fpath)
@@ -1203,8 +1243,10 @@ Version 2017-04-30"
           (goto-char (point-min)))))))
 
 (defun xah-title-case-region-or-line (@begin @end)
-  "Title case text between nearest brackets, or current line, or text selection.
-Capitalize first letter of each word, except words like {to, of, the, a, in, or, and, …}. If a word already contains cap letters such as HTTP, URL, they are left as is.
+ "Title case text between nearest brackets, or current line, or text selection.
+Capitalize first letter of each word, except words like {to, of, the, a,
+in, or, and, …}. If a word already contains cap letters such as HTTP, URL,
+they are left as is.
 
 When called in a elisp program, @begin @end are region boundaries.
 URL `http://ergoemacs.org/emacs/elisp_title_case_text.html'
@@ -1334,12 +1376,14 @@ version 2016-12-18"
 (defun xah-insert-bracket-pair (@left-bracket @right-bracket &optional @wrap-method)
   "Insert brackets around selection, word, at point, and maybe move cursor in between.
 
- @left-bracket and @right-bracket are strings. @wrap-method must be either 'line or 'block. 'block means between empty lines.
+ @left-bracket and @right-bracket are strings. @wrap-method must be either
+'line or 'block. 'block means between empty lines.
 
 • if there's a region, add brackets around region.
 • If @wrap-method is 'line, wrap around line.
 • If @wrap-method is 'block, wrap around block.
-• if cursor is at beginning of line and its not empty line and contain at least 1 space, wrap around the line.
+• if cursor is at beginning of line and its not empty line and contain
+at least 1 space, wrap around the line.
 • If cursor is at end of a word or buffer, one of the following will happen:
  xyz▮ → xyz(▮)
  xyz▮ → (xyz▮)       if in one of the lisp modes.
@@ -1648,10 +1692,13 @@ Version 2017-11-01"
 Subsequent calls expands the selection.
 
 when there's no selection,
-• if cursor is on a any type of bracket (parenthesis, quote), select whole bracketed thing including bracket
+• if cursor is on a any type of bracket (parenthesis, quote), select whole
+bracketed thing including bracket
 • else, select current word.
 
-when there's a selection, the selection extension behavior is still experimental. But when cursor is on a any type of bracket (parenthesis, quote), it extends selection to outer bracket.
+when there's a selection, the selection extension behavior is still experimental.
+But when cursor is on a any type of bracket (parenthesis, quote), it extends
+selection to outer bracket.
 
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
 Version 2017-09-01"
@@ -1748,9 +1795,10 @@ Version 2017-09-01"
        ))))
 
 (defun xah-select-text-in-quote ()
-  "Select text between the nearest left and right delimiters.
-Delimiters here includes the following chars: \"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）
-This command select between any bracket chars, not the inner text of a bracket. For example, if text is
+  "Select text between the nearest left and right delimiters. Delimiters
+here includes the following chars: \"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（） This
+command select between any bracket chars, not the inner text of a bracket.
+For example, if text is
 
  (a(b)c▮)
 
@@ -1786,11 +1834,11 @@ Version 2016-10-11"
     (redraw-frame)))
 
 (defun xah-user-buffer-q ()
-  "Return t if current buffer is a user buffer, else nil.
-Typically, if buffer name starts with *, it's not considered a user buffer.
-This function is used by buffer switching command and close buffer command, so that next buffer shown is a user buffer.
-You can override this function to get your idea of “user buffer”.
-Version 2016-06-18"
+  "Return t if current buffer is a user buffer, else nil. Typically, if
+buffer name starts with *, it's not considered a user buffer. This function
+is used by buffer switching command and close buffer command, so that next
+buffer shown is a user buffer. You can override this function to get your
+idea of “user buffer”. Version 2016-06-18"
   (interactive)
   (cond
    ((string-equal "*" (substring (buffer-name) 0 1)) nil)
@@ -2163,7 +2211,9 @@ Version 2015-10-14"
 (defun xah-delete-current-file-make-backup (&optional @no-backup-p)
   "Delete current file, makes a backup~, closes the buffer.
 
-Backup filename is “‹name›~‹date time stamp›~”. Existing file of the same name is overwritten. If the file is not associated with buffer, the backup file name starts with “xx_”.
+Backup filename is “‹name›~‹date time stamp›~”. Existing file of the same
+name is overwritten. If the file is not associated with buffer, the backup
+file name starts with “xx_”.
 
 When `universal-argument' is called first, don't create backup.
 

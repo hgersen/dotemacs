@@ -19,9 +19,9 @@
    ;; left hand
    ("q" . xah-reformat-lines)
    ("w" . xah-shrink-whitespaces)
-   ("f" . backward-kill-word)
-   ("p" . kill-word)
-   ("v" . set-mark-command)
+   ("f" . xah-backward-kill-word)
+   ("p" . xah-kill-word)
+   ("b" . xah-toggle-letter-case)
    ("a" . execute-extended-command)
    ("r" . open-line)
    ("s" . xah-delete-backward-char-or-bracket-text)
@@ -31,7 +31,7 @@
    ("x" . xah-cut-line-or-region)
    ("c" . xah-copy-line-or-region)
    ("d" . xah-paste-or-paste-previous)
-   ("b" . xah-toggle-letter-case)
+   ("v" . set-mark-command)
 
    ;; right hand
    ("j" . undo-tree-undo)
