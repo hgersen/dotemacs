@@ -29,6 +29,7 @@
 (use-package racer
   :straight t
   :after rust-mode company
+  :mode "\\.rs\\'"
   :init
   (setq racer-cmd "~/.cargo/bin/racer"
         racer-rust-src-path "~/coding/rust/src")
