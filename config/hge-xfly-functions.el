@@ -70,6 +70,10 @@
   (interactive)
   (xfly-modal-mode -1))
 
+(defun xfly-not-bound ()
+  "Does nothing: used to prevent command keys appearing in insert mode"
+  (interactive))
+
 ;; cursor movement
 
 (defun xah-pop-local-mark-ring ()

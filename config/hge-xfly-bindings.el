@@ -33,9 +33,25 @@
    ("d" . xah-paste-or-paste-previous)
    ("v" . set-mark-command)
 
+   ;; left hand - capitals
+   ("Q" . xfly-not-bound)
+   ("W" . xfly-not-bound)
+   ("F" . xfly-not-bound)
+   ("P" . xfly-not-bound)
+   ("B" . xfly-not-bound)
+   ("A" . xfly-not-bound)
+   ("R" . xfly-not-bound)
+   ("S" . xfly-not-bound)
+   ("T" . xfly-not-bound)
+   ("G" . xfly-not-bound)
+   ("Z" . xfly-not-bound)
+   ("X" . xfly-not-bound)
+   ("C" . xfly-not-bound)
+   ("D" . xfly-not-bound)
+   ("V" . xfly-not-bound)
+
    ;; right hand
    ("j" . undo-tree-undo)
-   ("J" . undo-tree-redo)
    ("l" . backward-word)
    ("u" . previous-line)
    ("y" . forward-word)
@@ -51,7 +67,24 @@
    ("h" . xah-backward-left-bracket)
    ("," . xah-next-window-or-frame)
    ("." . xah-forward-right-bracket)
-   ("/" . xah-goto-matching-bracket)))
+   ("/" . xah-goto-matching-bracket)
+
+   ;; right hand - capitals
+   ("J" . undo-tree-redo)
+   ("L" . xfly-not-bound)
+   ("U" . xfly-not-bound)
+   ("Y" . xfly-not-bound)
+   (":" . xfly-not-bound)
+   ("K" . xfly-not-bound)
+   ("N" . xfly-not-bound)
+   ("E" . xfly-not-bound)
+   ("I" . xfly-not-bound)
+   ("O" . xfly-not-bound)
+   ("M" . xfly-not-bound)
+   ("H" . xfly-not-bound)
+   ("<" . xfly-not-bound)
+   (">" . xfly-not-bound)
+   ("?" . xfly-not-bound)))
 
 ;; leader key; equivalent to xah-fly-leader-key-map
 (use-package xfly-leader-keys

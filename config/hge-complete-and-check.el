@@ -42,7 +42,10 @@
         ("C-e" . company-select-next)
         ("C-u" . company-select-previous)
         ("C-i" . company-complete-common-or-cycle)
-        ("C-o" . company-complete-selection))
+        ("C-o" . company-complete-selection)
+        ;; prevent auto-complete on enter; both appear needed
+        ("<return>" . nil)
+        ("RET" . nil))
   (global-company-mode 1))
 
 (provide 'hge-complete-and-check)
