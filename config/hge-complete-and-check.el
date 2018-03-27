@@ -39,9 +39,8 @@
   ;; work-around as :bind fails to work
   (bind-keys
      :map company-active-map
-        ("C-n" . company-select-next)
-        ("C-e" . company-select-previous)
-        ("C-p" . company-select-previous)
+        ("C-e" . company-select-next)
+        ("C-u" . company-select-previous)
         ("C-i" . company-complete-common-or-cycle)
         ("C-o" . company-complete-selection))
   (global-company-mode 1))
