@@ -1,12 +1,5 @@
 ;;;  -*- coding: utf-8; lexical-binding: t; -*-
 
-;; used to provide spacemacs like transient states
-(use-package hydra
-  :disabled t
-  :straight t
-  :init
-  (setq hydra-if-helpful t))
-
 ;; provide helpful hints
 (use-package which-key
   :straight t
@@ -135,6 +128,14 @@
   :after (counsel projectile)
   :config
   (counsel-projectile-mode))
+
+;; remove white-space on lines that have been edited
+(use-package ws-butler
+  :straight t
+  :delight
+  :commands ws-butler
+  :config
+  (ws-butler-global-mode 1))
 
 ;; folding
 (use-package vimish-fold
