@@ -6,9 +6,8 @@
   :bind
   (:map flyspell-mode-map
         ("C-;" . flyspell-correct-previous-word-generic))
-  :hook
-  (text-mode-hook . flyspell-mode)
-  (org-mode-hook . flyspell-mode)
+  :hook ((text-mode . flyspell-mode)
+         (org-mode . flyspell-mode))
   :config
   (setq ispell-program-name "hunspell"
         ispell-really-hunspell t
