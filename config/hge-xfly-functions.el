@@ -37,7 +37,7 @@
 ;;;###autoload
 (define-minor-mode xfly-modal-mode
   "Toggle `xfly-mode'."
-  nil " xfly" xfly-command-key-map
+  nil nil xfly-command-key-map
   (if xfly-modal-mode
       (progn
         (when xfly-modal-cursor-color
