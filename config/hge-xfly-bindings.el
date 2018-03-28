@@ -28,7 +28,7 @@
  ("x" xah-cut-line-or-region)
  ("c" xah-copy-line-or-region)
  ("d" xah-paste-or-paste-previous)
- ("b" set-mark-command)
+ ("v" set-mark-command)
 
  ;; right hand
  ("j" undo-tree-undo)
