@@ -11,21 +11,23 @@
   :straight t
   :delight
   :config
-  ;; prevent showing xfly- in front of commands in popup
-  (push '((nil . "xfly-") . (nil . "")) which-key-replacement-alist)
+  ;; prevent showing ryo- in front of commands in popup
+  (push '((nil . "ryo:") . (nil . "")) which-key-replacement-alist)
   (which-key-mode)
   (setq which-key-idle-delay 0.4))
 
 ;; roll my own modal mode
-(use-package xfly
-  :ensure nil
+(use-package ryo-modal
+  :straight t
+  ;; use demand to prevent errors relating to :ryo keyword
+  :demand t
   :delight
   ;; the *version takes precedence over other minor mode keybindings
-  :bind* ("<escape>" . xfly-command-mode-enable)
+  :bind* ("<escape>" . ryo-command-mode-enable)
   ;; repeat needs to be bound to keymap
-  :hook ((after-init . xfly-command-mode-enable)
-         (text-mode . xfly-command-mode-enable)
-         (prog-mode . xfly-command-mode-enable))
+  :hook ((after-init . ryo-command-mode-enable)
+         (text-mode . ryo-command-mode-enable)
+         (prog-mode . ryo-command-mode-enable))
   :init
   ;; Emacs has point between characters; stick with bar to reflect this
   ;; cursor for insert mode
@@ -33,8 +35,8 @@
   (set-cursor-color "chartreuse3")
 
   ;; cursor for ryo modal mode
-  (setq xfly-modal-cursor-color "DarkGoldenrod2"
-        xfly-modal-cursor-type 'bar))
+  (setq ryo-modal-cursor-color "DarkGoldenrod2"
+        ryo-modal-cursor-type 'bar))
 
 ;; offer functions to help in profiling startup
 (use-package esup

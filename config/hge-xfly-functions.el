@@ -19,60 +19,15 @@
 (when (version<= emacs-version "26.0.50"  )
   (defalias 'global-display-line-numbers-mode 'linum-mode ))
 
-;; NOTE: handling of minor mode and cursor change derived from ryo-modal; MIT Licence
-
-;; handle binding of keys
-(defvar xfly-command-key-map (make-sparse-keymap)
-  "General bindings in xfly mode")
-
-(defvar xfly-modal-cursor-type t
-  "Cursor type used in `xfly-modal'. See description of `cursor-type'.")
-
-(defvar xfly-modal-cursor-color "red"
-  "The cursor color used in `xfly-modal'. If nil use default color.")
-
-(defvar xfly-modal-default-cursor-color (face-attribute 'cursor :background)
-  "Default color of cursor.")
-
-;;;###autoload
-(define-minor-mode xfly-modal-mode
-  "Toggle `xfly-mode'."
-  nil nil xfly-command-key-map
-  (if xfly-modal-mode
-      (progn
-        (when xfly-modal-cursor-color
-          (add-hook 'post-command-hook #'xfly-modal--cursor-color-update))
-        (setq-local cursor-type xfly-modal-cursor-type)
-        (let ((map (eval (intern-soft (concat "xfly-" (symbol-name major-mode) "-map")))))
-          (when map
-            (make-local-variable 'minor-mode-overriding-map-alist)
-            (push '(xfly-modal-mode . ,map) minor-mode-overriding-map-alist))))
-    (remove-hook 'post-command-hook #'xfly-modal--cursor-color-update)
-    (setq minor-mode-overriding-map-alist
-          (assq-delete-all 'xfly-modal-mode minor-mode-overriding-map-alist))
-    (set-cursor-color xfly-modal-default-cursor-color)
-    (setq-local cursor-type (default-value 'cursor-type))))
-
-(defun xfly-modal--cursor-color-update ()
-  "Set cursor color depending on whether `xfly-modal' is active or not."
-  (if xfly-modal-mode
-      (set-cursor-color xfly-modal-cursor-color)
-    (set-cursor-color xfly-modal-default-cursor-color)))
-;; here code sourced from ryo-modal ends
-
-(defun xfly-command-mode-enable ()
-  "Explicitly enable xfly-modal mode"
+(defun ryo-command-mode-enable ()
+  "Explicitly enable ryo-modal mode"
   (interactive)
-  (xfly-modal-mode 1))
+  (ryo-modal-mode 1))
 
-(defun xfly-command-mode-disable ()
-  "Explicitly disable xfly-modal mode"
+(defun ryo-command-mode-disable ()
+  "Explicitly disable ryo-modal mode"
   (interactive)
-  (xfly-modal-mode -1))
-
-(defun xfly-not-bound ()
-  "Does nothing: used to prevent command keys appearing in insert mode"
-  (interactive))
+  (ryo-modal-mode -1))
 
 ;; cursor movement
 
@@ -2424,13 +2379,13 @@ Version 2017-01-29"
   "Insert a space, then activate insertion mode."
   (interactive)
   (insert " ")
-  (xfly-command-mode-disable))
+  (ryo-command-mode-disable))
 
 (defun xah-fly-insert-mode-activate-space-after ()
   "Insert a space, then activate insertion mode."
   (interactive)
   (insert " ")
-  (xfly-command-mode-disable)
+  (ryo-command-mode-disable)
   (left-char))
 
 (provide 'hge-xfly-functions)
