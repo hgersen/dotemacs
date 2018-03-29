@@ -38,4 +38,9 @@
    (racer-mode . eldoc-mode)
    (racer-mode . company-mode)))
 
+;; support toml for cargo
+(use-package toml-mode
+  :straight t
+  :mode "/\\(Cargo.lock\\|\\.cargo/config\\)\\'")
+
 (provide 'hge-programming)

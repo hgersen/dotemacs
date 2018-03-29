@@ -12,7 +12,7 @@
   :delight
   :config
   ;; prevent showing ryo- in front of commands in popup
-  (push '((nil . "ryo:") . (nil . "")) which-key-replacement-alist)
+  (push '((nil . "ryo:.*:") . (nil . "")) which-key-replacement-alist)
   (which-key-mode)
   (setq which-key-idle-delay 0.4))
 
