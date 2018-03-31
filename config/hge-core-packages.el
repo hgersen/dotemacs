@@ -23,7 +23,7 @@
   :demand t
   :delight
   ;; the *version takes precedence over other minor mode keybindings
-  :bind* ("<escape>" . ryo-command-mode-enable)
+  :bind* ("<DEL>" . ryo-command-mode-enable)
   ;; repeat needs to be bound to keymap
   :hook ((after-init . ryo-command-mode-enable)
          (text-mode . ryo-command-mode-enable)
@@ -33,6 +33,8 @@
   ;; cursor for insert mode
   (setq-default cursor-type 'bar)
   (set-cursor-color "chartreuse3")
+  ;; use escape to cancel
+  (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 
   ;; cursor for ryo modal mode
   (setq ryo-modal-cursor-color "DarkGoldenrod2"
